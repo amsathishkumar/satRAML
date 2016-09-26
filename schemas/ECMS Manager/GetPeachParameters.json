@@ -1,0 +1,175 @@
+{
+	"id" : "http://vcs.cisco.com/ecmsManager"
+	, "$schema" : "http://json-schema.org/draft-03/schema#"
+	, "definitions": { 
+		"id" : "#/definitions"
+		, "Meta-Info": {
+			"type" : "object"
+			, "properties" : {
+				"version" : "1.1"
+				,"history" : [
+					[ "version", "date", "author", "description" ]
+					, [ "1.0", "25-Jun-2014", "Eswaran Sadasivam", "Initial Draft" ]
+					, [ "1.1", "02-Aug-2014", "Eswaran Sadasivam", "Allow for returning multiple CAS block in single response" ]	
+					, ["1.2", "05-Feb-2015", "Eswaran Sadasivam", "Version and last update timestamp"]				
+        			]
+			}
+		}
+		, "mpegPID" : {
+			"description" : "packet identifier in a  MPEG TS"
+			, "type" : "integer"
+			, "minimum" : 0
+			, "maximum" : 8191
+		}
+		, "casId" : {
+			"description" : "CA_System_ID"
+			, "type" : "integer"
+			, "minimum" : 0
+			, "maximum" : 65535
+		}
+		, "scrMode" : {
+			"description" : "list of scrambling algos"
+			, "enum" : ["PK_DES","DVB_CSA","IDSA"]
+			, "default" : "PK_DES"
+		}
+		, "cpDuration" : {
+			"description" : "Crypto Period duration in milliseconds"
+			, "type" : "integer"
+			, "default" : 4000
+			, "minimum" : 4000
+			, "maximum" : 30000
+		}
+		, "ecmRepPeriod" : {
+			"description" : "ECM repeat interval in milliseconds"
+			, "type" : "integer"
+			, "default" : 100
+			, "minimum" : 0
+			, "maximum" : 500
+		}
+		, "cwDelay" : {
+			"description" : "Delay between time of sending new ECM and use of CW to scramble  in milliseconds"
+			, "type" : "integer"
+			, "default" : 450
+			, "minimum" : 0
+			, "maximum" : 30000
+		}
+		, "catEntry" : {
+			"description" : "EMM PID and other Data to be input supplied in CAT"
+			, "type" : "object"
+			, "properties" : {
+				"emm_PID" : {
+					"$ref" : "#/definitions/mpegPID"
+				}
+				, "additionalData" : {
+					"description" : "Additional CA Descriptor content represented as string of Hex characters"
+					, "type" : "string"
+					, "pattern" : "^([0-9A-Fa-f]{2})*$"
+				}
+			}
+		}
+		, "maxCpCountLinear" : {
+			"description" : "Max Crypto Periods per Linear ECM request"
+			, "type" : "integer"
+			, "default" : 15
+			, "minimum" : 1
+			, "maximum" : 1000
+		}
+		, "maxCpCountVOD" : {
+			"description" : "Max Crypto Periods per VOD ECM request"
+			, "type" : "integer"
+			, "default" : 75
+			, "minimum" : 1
+			, "maximum" : 1000
+		}
+		, "maxSessions_per_CCAP" : {
+			"description" : "Max active sessions that a instance of CCAP can request for encryption resources, ZERO(0)=unlimited"
+			, "type" : "integer"
+			, "default" : 0
+			, "minimum" : 0
+			, "maximum" : 65535
+		}
+		, "maxEcmRequest" : {
+			"description" : "Max number of ECMs that a CCAP can request for per service in each request"
+			, "type" : "integer"
+			, "default" : 75
+			, "minimum" : 0
+			, "maximum" : 65535
+		}
+		, "dvb_csa_CW_Confirm" : {
+			"description" : "In DVB-CSA mode should the CW generation adhere confirmation?"
+			, "type" : "boolean"
+			, "default" : false
+		}
+		, "version" : {
+			"description" : "Peach parameters version number, to aid VOD implementation without a shared cache node. Is deprecated against lastUpdateTimeStamp for other implementations"
+			, "type" : "integer"
+			, "minimum" : 0
+			, "maximum" : 31
+		}  
+		, "lastUpdateTimeStamp" : {
+		 	"description" : "Last update time in UTC, to be used for recognizing updates and consuming the newer parameters"
+		 	, "type" : "string"
+		 	 
+		}
+		, "peachParams" : {
+			"description" : "properties related to PEACH operations"
+			, "type" : "object"
+			, "properties" : {
+				"preferScrMode" : {
+					"$ref" : "#/definitions/scrMode"
+				}
+				, "cpDuration" : {
+					"$ref" : "#/definitions/cpDuration"
+				}
+				, "ecmRepPeriod" : {
+					"$ref" : "#/definitions/ecmRepPeriod"
+				}
+				, "cwDelay" : {
+					"$ref" : "#/definitions/cwDelay"
+				}
+				, "catEntry" : {
+					"$ref" : "#/definitions/catEntry"
+				}
+				, "networkPID" : {
+					"$ref" : "#/definitions/mpegPID"
+					, "default" : 8188
+				}
+				, "maxCpCountLinear" : {
+					"$ref" : "#/definitions/maxCpCountLinear"
+				}
+				, "maxCpCountVOD" : {
+					"$ref" : "#/definitions/maxCpCountVOD"
+				}
+				, "maxSessions_per_CCAP" : {
+					"$ref" : "#/definitions/maxSessions_per_CCAP"
+				}
+				, "maxEcmRequest" : {
+					"$ref" : "#/definitions/maxEcmRequest"
+				}
+				, "dvb_csa_CW_Confirm" : {
+					"$ref" : "#/definitions/dvb_csa_CW_Confirm"
+				}
+			}
+		}
+	}
+	, "type": "array"
+	, "minItems": 1
+	, "items" : {
+		"type" : "object"
+		, "properties" : {
+			"casId" : {	
+				"$ref" : "#/definitions/casId"
+				, "required" : true
+			}
+			, "version" : {
+				"$ref" : "#/definitions/version"
+			}
+			, "lastUpdateTimeStamp" : {
+				"$ref" : "#/definitions/lastUpdateTimeStamp"
+			}
+			, "peachParameters" : {
+				"$ref": "#/definitions/peachParams"
+			}
+		}
+	}
+}

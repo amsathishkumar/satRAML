@@ -1,0 +1,14 @@
+{
+	"packageName" : "Gold"
+	, "packageType" : "SUBSCRIPTION"
+	,"description":"gold Package"
+	, "pkPackageEid" : 123
+	, "status" : "ACTIVE"
+	, "segments" : [
+		"HBO_East_Regular"
+		,"ESPN_Regular"
+	]
+	, "subPackages" : [
+		"Silver"
+	]
+}

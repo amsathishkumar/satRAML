@@ -1,0 +1,30 @@
+{
+	"id": "http://vcs.cisco.com/schemas",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"errorType": 
+	{
+		"id": "#/general/errorType",
+		"type": "object",
+		"properties": 
+		{
+				"appErrorCode": 
+			{
+				"description": "Application specific error code.  ZERO(0) = SUCCESS",
+				"type": "integer",
+				"default": 0
+			},
+
+			"appErrorString": 
+			{
+				"description": "Application specific error message.",
+				"type": "string",
+				"default": ""
+			},
+
+		"required": 
+		[
+			"appErrorCode"
+		]
+	}
+}
+}

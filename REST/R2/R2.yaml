@@ -1,0 +1,203 @@
+#%RAML 0.8
+---
+title: "R2"
+version: v1
+documentation: 
+  - title: Approach
+    content: |
+       R2 - REST API for managing package/auth code information with PKC.
+       
+       The data managed by this API is organized as follows.
+           * Package: Silver
+              *  Segment - PBS
+              *  Segment - PBS_Limited_Duration
+           * Package: Gold
+              *  Segment - HBO
+              *  Segment - HBO_CopyNever
+              *  Package - Silver
+
+       As the data is organized in a  hierachical model of elements, and all 
+       the operations can be incorporated as CRUD operations on these basic values, 
+       a "data-model" approach for the API was built.
+ 
+  - title: PKC Scope
+    content: |
+       With PKC, the 2 CA systems under DBDS, namely PowerKEY (EC) and SCP/SCC (DTACS)
+       have been merged into PKC.
+       
+       Also, PKC is deployed in the data center, and operates at a division level scope.  
+       Multiple market level operations are managed from the PKC.  The data to specific
+       market is identified by "caDomain" passed as queryParameter in the API.
+ 
+  - title: PowerKEY CAS (ex EC)
+    content: |
+       The concepts of sources and segments are directly extracted from the legacy 
+       deployments of DBDS.  The traditional parameters/attributes associated with these
+       elements are continued to be supported.
+           
+           * Package: 
+              *  <Parameters-TBD>
+ 
+  - title: SCP/SCC CAS (DTACS)
+    content: |       
+       To support SCP/SCC the following additional parameters/concepts are added.
+       
+           * Package: 
+              *  Treated also as Authcode
+              *  Special packages that are only applicable to DTA defined
+              *  Authcodes that will be used as GroupID assignment
+              *  Authcodes that signal HD enablement for DTA   
+                
+mediaType: application/json
+resourceTypes: 
+  - !include ../general/resourceTypes.yaml
+traits: 
+  - !include ../general/traits.yaml
+  - !include ../R2/R2_traits.yaml
+schemas:
+  - package : !include ../../schemas/pkc/package.json 
+  - packages : !include ../../schemas/pkc/packages.json  
+  - packageShortInfo : !include ../../schemas/pkc/packageShortInfo.json 
+  - packageShortInfos : !include ../../schemas/pkc/packageShortInfos.json 
+  - errorType: !include ../../schemas/general/errorType.json 
+baseUri: http://baseaddress/{version}
+/packages:
+  type: { autoReadOnlyCollection: {  errorResponse: errorType } }
+  get:
+    is: [ allowPagination, allowTracking,  multiCaDomain : { errorResponse: errorType },qSegmentName: { objectType: packages },qChildPackageName: { objectType: packages } ]
+    responses:
+      200: 
+        body: 
+          schema: packages
+          example: !include ../../schemas/examples/pkc/packages.json 
+      400:
+        body: 
+          schema: errorType
+          example:  !include ../../schemas/examples/general/error/APP_error/generic/PackageId_Invalid.json
+      404:
+        body: 
+          schema: errorType
+          example: !include ../../schemas/examples/general/error/APP_error/generic/CADomain_Not_Found.json
+      500:
+        body: 
+          schema: errorType
+          example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+  
+  /shortInfos: 
+    type: { readOnlyCollection : { errorResponse: errorType, memberObjectType: packageShortInfo, memberSchemaType: packageShortInfo, collectionSchemaType: packageShortInfos } }
+    get:
+      is: [ allowPagination, allowTracking,  multiCaDomain : { errorResponse: errorType },qSegmentName: { objectType: packages }, qChildPackageName: { objectType: packages } ]
+      responses:
+        200: 
+          body: 
+            schema: packageShortInfos
+            example: !include ../../schemas/examples/pkc/packageShortInfos.json 
+        400:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/PackageId_Invalid.json 
+        404:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/CADomain_Not_Found.json 
+        500:
+          body:
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+  /{packageName}: 
+    type: { externalIdentifiedMember : { errorResponse: errorType, schemaType: package, objectType: package, key: "packageName" } }
+    uriParameters:
+      packageName:
+        minLength: 1
+        maxLength: 20
+        type: string
+    get:
+      is: [ allowTracking, multiCaDomain : { errorResponse: errorType }  ]
+      responses:
+        200: 
+          body:
+            schema: package
+            example: !include ../../schemas/examples/pkc/package.json
+        400:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/PackageId_Invalid.json  
+        404:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/pkc/PackageName_Not_Found.json 
+        500:
+          body:
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+    post:
+      is: [ needTracking  : { "errorResponse": errorType } ]
+      body: 
+          schema: package
+          example: !include ../../schemas/examples/pkc/package.json
+      responses:
+        201: 
+          body:
+            schema: package
+            example: !include ../../schemas/examples/pkc/package.json
+        400:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/PackageId_Invalid.json 
+        409:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/pkc/AlreadyExistsPackageName.json            
+        500:
+          body:
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+    put:
+      is: [  needTracking  : { "errorResponse": errorType }  ]
+      body:
+        schema: package 
+        example: !include ../../schemas/examples/pkc/package.json 
+      responses:
+       200:
+         body: 
+          schema: package
+          example: !include ../../schemas/examples/pkc/package.json 
+       201:
+         body: 
+          schema: package
+          example: !include ../../schemas/examples/pkc/package.json  
+       400:
+        body: 
+          schema: errorType
+          example: !include ../../schemas/examples/general/error/APP_error/generic/PackageId_Invalid.json   
+       404:
+        body: 
+          schema: errorType
+          example: !include ../../schemas/examples/general/error/APP_error/generic/CADomain_Not_Found.json
+       409:
+        body: 
+          schema: errorType
+          example: !include ../../schemas/examples/general/error/APP_error/pkc/PackageTypeBeingModified.json            
+       500:
+        body: 
+          schema: errorType
+          example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+    delete: 
+      is: [ needTracking  : { "errorResponse": errorType } ]
+      responses:
+        200: 
+          body:
+            schema: package
+            example: !include ../../schemas/examples/pkc/package.json
+        400:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/PackageId_Invalid.json 
+        404:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/pkc/PackageName_Not_Found.json          
+        500:
+          body:
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json

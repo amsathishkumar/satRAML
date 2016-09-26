@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://jsonschema.net",
+  "type": "object",
+  "properties": {
+    "lastName": {
+      "id": "http://jsonschema.net/lastName",
+      "type": "string"
+    },
+    "firstName": {
+      "id": "http://jsonschema.net/firstName",
+      "type": "string"
+    },
+    "age": {
+      "id": "http://jsonschema.net/age",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "lastName",
+    "firstName"
+  ]
+}

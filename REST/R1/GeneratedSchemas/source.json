@@ -1,0 +1,185 @@
+{
+    "id": "http://vcs.cisco.com/schemas", 
+    "$schema": "http://json-schema.org/draft-04/schema#", 
+    "source": {
+        "id": "#/pkc/source", 
+        "description": "captures the source qualifiers", 
+        "type": "object", 
+        "properties": {
+            "caDomainId": {
+                "description": "Identifier for a CA Domain. Similar to  ECID for a given ESN.", 
+                "type": "string", 
+                "minLength": 1, 
+                "maxLength": 20
+            }, 
+            "sourceId": {
+                "description": "Identifier for a Linear source.  Similar to ATSC SI sourceId Range(0-0xFFFF).  Though 0-0xFFF is another range that exists.", 
+                "type": "integer", 
+                "minimum": 1, 
+                "maximum": 65535
+            }, 
+            "description": {
+                "description": "Detailed Description about the source.", 
+                "type": "string", 
+                "minLength": 1, 
+                "maxLength": 20
+            }, 
+            "SCID": {
+                "description": "SCID is allocated for all the DTA applicable sources for CA.", 
+                "type": "integer", 
+                "minimum": 1, 
+                "maximum": 500
+            }, 
+            "status": {
+                "description": "status of the object. GET only parameter", 
+                "enum": [
+                    "CREATE_IN_PROGRESS", 
+                    "ACTIVE", 
+                    "DELETE_IN_PROGRESS", 
+                    "DELETED"
+                ]
+            }, 
+            "sourceName": {
+                "description": "Name of the source", 
+                "type": "string", 
+                "minLength": 1, 
+                "maxLength": 20
+            }, 
+            "contentType": {
+                "description": "Captures the content quality for enabling any special encryption. (e.g.) HD content security will indicate special encryption for uDTA", 
+                "enum": [
+                    "SD", 
+                    "SDHighValue", 
+                    "HD"
+                ], 
+                "default": "SD"
+            }, 
+            "sourceSecurities": {
+                "description": "List of source security effective on the source.  If more than one item with same Effective Time is encountered, the one with more stringent security level will be used.", 
+                "type": "array", 
+                "minOccurs": 0, 
+                "maxOccurs": "unbounded", 
+                "items": {
+                    "sourceSecurity": {
+                        "description": "captures the source security level applied to a source", 
+                        "type": "object", 
+                        "properties": {
+                            "securityMode": {
+                                "description": "Mode of security for the source", 
+                                "enum": [
+                                    "CLEAR", 
+                                    "ENCRYPTED"
+                                ], 
+                                "default": "ENCRYPTED"
+                            }, 
+                            "effectiveTime": {
+                                "description": "Indicates the date time for element to be effective.", 
+                                "type": "string", 
+                                "format": "date-time"
+                            }
+                        }, 
+                        "required": [
+                            "securityMode", 
+                            "effectiveTime"
+                        ], 
+                        "additionalProperties": false
+                    }
+                }
+            }, 
+            "SCC_SourceParams": {
+                "description": "Captures Source specific parameters configured for SCP/SCC CAS", 
+                "type": "object", 
+                "properties": {
+                    "DTA_applicable": {
+                        "description": "Indicates if the source is available for DTAs", 
+                        "type": "boolean"
+                    }, 
+                    "SCC_Mode": {
+                        "description": "SCC Mode assigned to a given source, ignored if DTA_applicable is false.", 
+                        "enum": [
+                            "INIT", 
+                            "PREVIEW", 
+                            "ENABLED"
+                        ], 
+                        "default": "INIT"
+                    }, 
+                    "isDLNA": {
+                        "description": "Indicates if the source is available on DLNA output, ignored if DTA_applicable is false.", 
+                        "type": "boolean", 
+                        "default": false
+                    }
+                }, 
+                "required": [
+                    "DTA_applicable"
+                ], 
+                "additionalProperties": false
+            }, 
+            "acRef": {
+                "description": "Reference Access Critirea that an External CCAP/SCS device can query for ECM with. Stored as hex-string", 
+                "type": "string", 
+                "properties": {
+                    "isUsed": {
+                        "description": "indicates if this is setup on the ECMG sub-system for query from CCAP/SCS.  False, when extAc is used.", 
+                        "type": "boolean"
+                    }, 
+                    "acRefValue": {
+                        "extend": {
+                            "acRefValue": {
+                                "description": "Reference Access Criteria value used as lookup index", 
+                                "type": "string", 
+                                "minLength": 1, 
+                                "maxLength": 255
+                            }
+                        }
+                    }, 
+                    "required": [
+                        "isUsed", 
+                        "acRefValue"
+                    ], 
+                    "additionalProperties": false
+                }
+            }, 
+            "extAcRefs": {
+                "description": "List of Reference Access Critireas that an External EIS system has adminstered on the SCS for this source that SCS can query for ECM with", 
+                "type": "array", 
+                "minOccurs": 0, 
+                "maxOccurs": 255, 
+                "items": {
+                    "extAcRef": {
+                        "description": "extAcRef supplied into PKC to prep up the ECMG for SCS query. Generally supplied with CaSystemId adminstered. When extAcRef is supplied internal acRef will not be adminstered on ECMG for lookup.", 
+                        "type": "object", 
+                        "properties": {
+                            "acRefValue": {
+                                "description": "Reference Access Criteria value used as lookup index", 
+                                "type": "string", 
+                                "minLength": 1, 
+                                "maxLength": 255
+                            }, 
+                            "casSystemId": {
+                                "description": "CASystemId = 0x0E00 for PowerKEY, 0x0E11 for SCP", 
+                                "type": "integer", 
+                                "minimum": 0, 
+                                "maximum": 65535
+                            }, 
+                            "casSubSystemId": {
+                                "description": "CA SubSystem ID = user customized for a given region", 
+                                "type": "integer", 
+                                "minimum": 0, 
+                                "maximum": 65535
+                            }, 
+                            "required": [
+                                "acRefValue"
+                            ], 
+                            "additionalProperties": false
+                        }
+                    }
+                }
+            }
+        }, 
+        "required": [
+            "sourceId", 
+            "sourceName"
+        ], 
+        "additionalProperties": false
+    }
+}

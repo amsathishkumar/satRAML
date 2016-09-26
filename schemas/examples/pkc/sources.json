@@ -1,0 +1,25 @@
+[
+		{
+			"caDomainId": "1234",
+			"sourceId": 123,
+			"SCID":1,
+			"status":"ACTIVE",
+			"contentType":"SD",
+			"SCC_SourceParams":"ENABLED",
+			"sourceName": "HBO",
+			"isDTAApplicable": true
+			, "acRef" : "1234"
+		},
+
+		{
+			"caDomainId": "1234",
+			"sourceId": 234,
+			"SCID":100,
+			"status":"ACTIVE",
+			"contentType":"HD",
+			"SCC_SourceParams":"ENABLED",
+			"sourceName": "HBO",
+			"isDTAApplicable": true
+			, "acRef" : "9502007B"
+		}
+]

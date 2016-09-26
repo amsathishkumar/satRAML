@@ -1,0 +1,233 @@
+#%RAML 0.8
+---
+title: "BFS"
+version: v1
+schemas:
+  - servers: !include servers.json
+  - server: !include server.json
+  - dirlist: !include dirlist.json
+  - links: !include links.json
+  
+documentation: 
+  - title: Overview
+    content:
+      This API defines the JSON REST Interface for BFS operation.The BFS Server REST API allows applications to create, 
+      write, and delete files to the broadcast carousels. 
+      
+      The BFS server API performs three distinct functions as described below -
+              
+      * Register the application server with the BFS server.
+      
+      * Create directories and files in the BFS directory structure.
+       
+      * Deliver files to the BFS server.
+        
+
+baseUri: http://baseURL/{version}
+mediaType: application/json
+
+traits: 
+  - siteSpecific:
+      queryParameters:
+        siteName:
+          description: Site Name
+          type: string
+          required: false      
+  
+/bfs:
+  get:
+    description: |
+      Gets a list of registered servers. The call returns a list of registered server. 
+      This is an admin API and should not be exposed to 3rd party clients.
+      The call returns a list of all client registrations within the BFS Service.
+    responses:
+      200:
+        description: List of all registered servers (client registrations).
+        body:
+          schema: servers 
+          example: !include ex_servers.json
+      204:
+        description: EMPTY. Server list is empty.
+      404:
+        description: Not Found
+      500:
+        description: Internal Server Error
+              
+  /{server}:
+    uriParameters:
+      server:
+        maxLength: 15
+        displayName: Server Name
+        type: string
+  
+    get:
+      is: [ siteSpecific ]
+      description: |
+        This API function enables an application server to register with the BFS server. 
+        An application server must register with the BFS server to receive its directory (published as part of the BFS), and to create 
+        directories and files in the file system.
+        
+      responses:
+        200:
+          description: The registered server details.
+          body:
+            schema: server
+            example: !include ex_server.json
+        404:
+          description: Not Found
+        500:
+          description: Internal Server Error
+    put:
+      is: [ siteSpecific ]
+      description: Register a new application server with the BFS server. Update an existing application server registration.
+      body:
+        schema: server
+        example: !include ex_server.json
+      
+    delete:
+      is: [ siteSpecific ]
+      description: Cancel an application server registration. All directories and files created by the server will be purged.
+  
+    /path/to/directory:
+      get:
+        is: [ siteSpecific ]
+        description: Query a Dir
+        responses:
+          200:
+            description: List of child directories and files in the queried dir.
+            body:
+              schema: dirlist
+              example: !include ex_dirlist.json
+          404:
+            description: Not Found
+            body:
+              example: |
+                {
+                  "error": "Invalid Site | Dir Not Found"
+                }            
+          500:          
+            description: Internal Server Error
+          
+      put:
+        is: [ siteSpecific ]
+        description: Modify the Directory Name
+        body:
+          schema: |
+            {
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "id": "http://dbds.vcs.cisco.com/bfs",
+              "type": "object",
+              "properties": {
+                "newName": {
+                  "id": "http://dbds.vcs.cisco.com/bfs/newName",
+                  "type": "string",
+                  "maxLength" : 250
+                }
+              },
+              "required": [
+                "newName"
+              ]
+            }            
+          example: |
+              {
+                "newName" : "NewDirName"
+              }          
+      post:
+        is: [ siteSpecific ]
+        description: Create a child directory if it does not exist. If the directory exist, then the method returns 409 HTTP error code.
+        responses:
+          200:
+            description: OK
+          409:
+            description: Conflict. Resource exists. 
+        
+      delete:
+        is: [ siteSpecific ] 
+        description: Delete a Dir
+          
+    /path/to/file:
+      get:
+        is: [ siteSpecific ]
+        description: Download the file
+        responses:
+          200:
+            description: OK
+          404:
+            description: Not Found
+            body:
+              example: |
+                {
+                  "error": "Invalid Site | File Not Found"
+                }
+      put:
+        is: [ siteSpecific ]
+        description: Modify a file
+        body:
+          multipart/form-data:
+            formParameters:
+              file:
+                type: file
+                required: true
+              sourceId:
+                type: string
+                required: true
+              deliveryMode:              
+                type: string
+                required: true
+        responses:
+            200:
+              description: OK
+
+      post:
+        is: [ siteSpecific ]
+        description: Create a new file
+        body:
+          multipart/form-data:
+            formParameters:
+              file:
+                type: file
+                required: true
+              sourceId:
+                type: string
+                required: true
+              deliveryMode:              
+                type: string
+                required: true
+        responses:
+            200:
+              description: OK
+            409:
+              description: Conflict. Resource exists. 
+         
+      delete:
+        is: [ siteSpecific ] 
+        description: Delete the file
+      
+    /links:
+      get:
+        is: [ siteSpecific ]
+        description: Query list of links
+        responses:
+          200:
+            body:
+              schema: links
+              example: !include ex_links.json
+                
+      put:
+        is: [ siteSpecific ]
+        description: Modify a link
+        body:
+          schema: links
+          example: !include ex_links.json
+          
+      post:
+        is: [ siteSpecific ]
+        description: Create a link
+        body:
+          schema: links
+          example: !include ex_links.json
+          
+      delete:
+        is: [ siteSpecific ] 
+        description: Delete a link
+        

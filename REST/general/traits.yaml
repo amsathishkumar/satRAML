@@ -1,0 +1,117 @@
+#traits.yaml
+multiCaDomain: 
+      queryParameters: 
+        caDomain:
+           type: integer
+           description: "CA Domain ID seperated by comma"
+           displayName: caDomain
+           example: "1234, 23456"
+           maximum: 65535
+           required: true
+           repeat: false
+      responses:
+         400: 
+            description: Bad Request.
+            body: 
+              schema: <<errorResponse>> 
+singleCaDomain: 
+      queryParameters: 
+        caDomainId:
+           type: integer
+           description: "Single CA Domain ID"
+           displayName: caDomainId
+           example: "1234"
+           maximum: 65535
+           required: true
+      responses:
+         400:            
+            description: Bad Request.
+            body: 
+              schema: <<errorResponse>> 
+subCollection: 
+      responses:
+         404:
+            description: Parent of the collection is not found
+            body: 
+              schema: <<errorResponse>> 
+allowTracking:
+      queryParameters: 
+        sourceSystem:
+           type: string
+           description: Msg Orig System
+           displayName: sourceSystem
+           minLength: 1
+           maxLength: 255
+           example: "SYSTEM_1"
+           pattern: "^(([A-Za-z0-9])+$"
+           required: false
+           repeat: false
+        tracingToken:
+           type: string
+           description: Msg Track Token
+           displayName: tracingToken
+           minLength: 1
+           maxLength: 255
+           example: "12345"
+           pattern: "^(([A-Za-z0-9])+$"
+           required: false
+           repeat: false
+needTracking:
+      queryParameters: 
+        sourceSystem:
+           type: string
+           description: Msg Orig System
+           displayName: sourceSystem
+           minLength: 1
+           maxLength: 255
+           example: "SYSTEM_1"
+           pattern: "^(([A-Za-z0-9])+$"
+           required: true
+           repeat: false
+        tracingToken:
+           type: string
+           description: Msg Track Token
+           displayName: tracingToken
+           minLength: 1
+           maxLength: 255
+           example: "12345"
+           pattern: "^(([A-Za-z0-9])+$"
+           required: true
+           repeat: false
+      responses:
+        400: 
+          description: Bad Request.
+          body: 
+             schema: <<errorResponse>> 
+allowPagination: 
+      queryParameters:
+        limit:
+          type: integer
+          minimum: 1
+          default: 10
+          required: false    
+          repeat: false
+        offset:
+          type: integer
+          minimum: 0
+          default: 10
+          required: false    
+          repeat: false
+        sort:
+          description: Comma seperated fields with +/- indicating if the field is asc/desc.
+          displayName: Sorting selection.
+          type: string
+          default: "+field1,+field2,+field3"
+          example: "+field1,-field2,+field3"
+          pattern: "^([+-]([A-Za-z0-9])+([ ]*,[ ]*[+-]([A-Za-z0-9])+)*$"
+          required: false    
+          repeat: false
+          
+      responses:
+           200:
+             headers:
+               X-total-count:
+                 type: integer
+                 required: true    
+                 repeat: false
+

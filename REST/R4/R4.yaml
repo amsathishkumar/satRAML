@@ -1,0 +1,452 @@
+#%RAML 0.8
+---
+title: "R4"
+version: v1
+documentation: 
+  - title: Approach
+    content: |
+       R4 - REST API for managing channel maps and channel map assignments with service management.
+      
+  - title: Logical Toplogy Elements
+    content: |
+       ChannelMap: 
+          - Defines channel lineup that can be applicable for specific region.
+          - Typically consumed by STBs and uDTA in that  geographical region.
+       
+       Hub: 
+          - Logical entity that represents one OOB Flow + IB Flow combination point.
+          - Typically Service Information (SI) is addressible to this logical entity.
+          - Multiple OOB bridges are assigned to this logical entity.      
+                  
+       Broadcast Service Group (BSG):  
+          - Logical entity in the DTA world under a given headend that attributes to one In-band Service Information (SI) output.
+          - This typically is synonymous to Hub.  But with difference that multiple Hubs having same SI can be merged into one BSG.
+          - This construct is required to address the challenge of IB QAMs being straddled across Hubs.
+         
+  - title: Data organization
+    content: |
+         The data managed by this API is organized as follows.
+         * ChannelMap: DefaultChannelMap(0)
+            * HubId : 1 - Hub1
+            * HubId : 2 - Hub2
+         * ChannelMap: ChannelMap(1)
+            * HubId:  3 - Hub3
+            
+         * ChannelMap: DefaultChannelMap(0)
+            * ChannelNumber: 1 - HBO ( ServiceInformation Mapped on the ChannelMap) 
+            * ChannelNumber: 2 - PBS ( ServiceInformation Mapped on the ChannelMap) 
+            * ChannelNumber: 3 - ESPN ( ServiceInformation Mapped on the ChannelMap) 
+            * ChannelNumber: 4 - ENCE ( ServiceInformation Mapped on the ChannelMap) 
+            * ChannelNumber: 5 - NGEO ( ServiceInformation Mapped on the ChannelMap) 
+            * ChannelNumber: 6 - HBO ( ServiceInformation Mapped on the ChannelMap) 
+        
+        
+         * ChannelMap: ChannelMap(1)
+            * ChannelNumber: 101 - HBO ( ServiceInformation Mapped on the ChannelMap) 
+            * ChannelNumber: 102 - PBS ( ServiceInformation Mapped on the ChannelMap) 
+            * ChannelNumber: 103 - ESPN ( ServiceInformation Mapped on the ChannelMap) 
+            * ChannelNumber: 104 - ENCE ( ServiceInformation Mapped on the ChannelMap) 
+            * ChannelNumber: 105 - NGEO ( ServiceInformation Mapped on the ChannelMap) 
+            * ChannelNumber: 106 - HBO ( ServiceInformation Mapped on the ChannelMap)       
+     
+          This API defined 2 interface. 
+            * 1)  Defines Create ChannelMap and associate them with HUBs
+            * 2)  Defining Channel Lineups - Associating Services  the channel slots.
+           
+         
+  - title: Scope of operation
+    content: |       
+           * HUB creation will be done internal to the system.  Interface is READ-ONLY.    
+         
+                
+mediaType: application/json
+resourceTypes: 
+  - !include ../general/resourceTypes.yaml
+traits: 
+  - !include ../general/traits.yaml
+  
+schemas: 
+  - hubs: !include ../../schemas/serviceMgmt/hubs.json
+  - hub: !include ../../schemas/serviceMgmt/hub.json
+  - lineUps: !include ../../schemas/serviceMgmt/lineUps.json
+  - lineUp: !include ../../schemas/serviceMgmt/lineUp.json
+  - channelMap: !include ../../schemas/serviceMgmt/channelMap.json
+  - channelMaps: !include ../../schemas/serviceMgmt/channelMaps.json
+  - channelMapEntry: !include ../../schemas/serviceMgmt/channelMapEntry.json
+  - sourceChanInfos: !include ../../schemas/serviceMgmt/sourceChanInfos.json
+  - errorType: !include ../../schemas/general/errorType.json    
+baseUri: http://baseaddress/{version}
+/lineUps:
+  type: { readOnlyCollection: {  errorResponse: errorType, memberObjectType: lineUp, memberSchemaType: lineUp, collectionSchemaType: lineUps  } }
+  get:
+    is: [ allowPagination, allowTracking,  multiCaDomain : { errorResponse: errorType }]
+    responses:
+      200: 
+        body: 
+          schema: lineUps
+          example: !include ../../schemas/examples/serviceMgmt/lineUps.json
+      204:
+        body:
+          schema: errorType
+          example: !include ../../schemas/examples/general/error/URL_error/Empty_List.json    
+      400:
+        body: 
+          schema: errorType
+          example: !include ../../schemas/examples/general/error/URL_error/BothPageNumAndRecordsPerPageReqd.json
+      404:
+        body: 
+          schema: errorType
+          example: !include ../../schemas/examples/general/error/APP_error/generic/CADomain_Not_Found.json
+      500:
+        body: 
+          schema: errorType
+          example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+  /{channelMapId}:
+        type: { externalIdentifiedMember : { errorResponse: errorType, schemaType: lineUp, objectType: lineUp, key: "caDomainId,channelMapId" } }
+        uriParameters:
+          channelMapId:
+            minimum: 1
+            maximum: 65535
+            displayName: ChannelMap Id
+            type: integer
+        get:
+          is: [ allowTracking, multiCaDomain : { errorResponse: errorType }  ]
+          responses:
+            200: 
+              body:
+                schema: lineUp
+                example: !include ../../schemas/examples/serviceMgmt/lineUp.json
+            400:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/URL_error/CADomain_Not_Supplied.json 
+            404:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/serviceMgmt/LugId_Not_Found.json 
+            500:
+              body:
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+        post:
+          is: [singleCaDomain : { errorResponse: errorType }, needTracking  : { "errorResponse": errorType }  ]
+          body: 
+            schema: lineUp
+            example: !include ../../schemas/examples/serviceMgmt/lineUp.json
+          responses:
+            201: 
+              body:
+                schema: lineUp
+                example: !include ../../schemas/examples/serviceMgmt/lineUp.json
+            400:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/URL_error/CADomain_Not_Supplied.json 
+            408:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/serviceMgmt/AlreadyAssociatedHub.json
+            409:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/serviceMgmt/AlreadyExistsLug.json            
+            500:
+              body:
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+        put:
+          is: [singleCaDomain : { errorResponse: errorType }, needTracking  : { "errorResponse": errorType }  ]
+          body: 
+            schema: lineUp
+            example: !include ../../schemas/examples/serviceMgmt/lineUp.json
+          responses:
+            200: 
+              body:
+                schema: lineUp
+                example: !include ../../schemas/examples/serviceMgmt/lineUp.json
+            201: 
+              body:
+                schema: lineUp
+                example: !include ../../schemas/examples/serviceMgmt/lineUp.json
+            400:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/URL_error/CADomain_Not_Supplied.json 
+            408:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/serviceMgmt/AlreadyAssociatedHub.json
+            500:
+              body:
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+        delete: 
+          is: [ needTracking  : { "errorResponse": errorType } ]
+          responses:
+            200: 
+              body:
+                schema: lineUp
+                example: !include ../../schemas/examples/serviceMgmt/lineUp.json
+            400:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/URL_error/CADomain_Not_Supplied.json 
+            404:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/serviceMgmt/LugId_Not_Found.json          
+            500:
+              body:
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+ 
+/channelMaps:
+  type: { readOnlyCollection: {  errorResponse: errorType, memberObjectType: channelMap, memberSchemaType: channelMap, collectionSchemaType: channelMaps  } }
+  get:
+    is: [ allowPagination, allowTracking,  multiCaDomain : { errorResponse: errorType }]
+    responses:
+      200: 
+        body: 
+          schema: channelMaps
+          example: !include ../../schemas/examples/serviceMgmt/channelMaps.json    
+      204:
+        body:
+          schema: errorType
+          example: !include ../../schemas/examples/general/error/URL_error/Empty_List.json
+      400:
+        body: 
+          schema: errorType
+          example: !include ../../schemas/examples/general/error/URL_error/BothPageNumAndRecordsPerPageReqd.json
+      404:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/serviceMgmt/LugId_Not_Found.json          
+      500:
+        body: 
+          schema: errorType
+          example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+  /{channelMapId}: 
+    type: { externalIdentifiedMember : { errorResponse: errorType, schemaType: channelMap, objectType: channelMap, key: "caDomainId,channelMapId" } }
+    uriParameters:
+      channelMapId:
+        minimum: 1
+        maximum: 255
+        displayName: ChannelMap Id
+        type: integer
+    get:
+      is: [  multiCaDomain : { errorResponse: errorType }, allowPagination, allowTracking ]
+      responses:
+        200: 
+          body:
+            schema: channelMap
+            example: !include ../../schemas/examples/serviceMgmt/channelMap.json 
+        400:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/URL_error/CADomain_Not_Supplied.json 
+        404:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/serviceMgmt/LugId_Not_Found.json          
+        500:
+          body:
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+    post:
+      is: [ singleCaDomain : { errorResponse: errorType }, needTracking : { "errorResponse": errorType }  ]
+      body: 
+        schema: channelMap
+        example: !include ../../schemas/examples/serviceMgmt/channelMap.json
+      responses:
+        201: 
+          body:
+            schema: channelMap
+            example: !include ../../schemas/examples/serviceMgmt/channelMap.json
+        400:
+           body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/URL_error/CADomain_Not_Supplied.json 
+        409:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/serviceMgmt/ChannelMapBeingModified.json            
+        500:
+          body:
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+    put:
+      is: [ singleCaDomain : { errorResponse: errorType }, needTracking : { "errorResponse": errorType }  ]
+      body: 
+        schema: channelMap
+        example: !include ../../schemas/examples/serviceMgmt/channelMap.json
+      responses:
+        200: 
+          body:
+            schema: channelMap
+            example: !include ../../schemas/examples/serviceMgmt/channelMap.json
+        201: 
+          body:
+            schema: channelMap
+            example: !include ../../schemas/examples/serviceMgmt/channelMap.json
+        400:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/URL_error/CADomain_Not_Supplied.json
+        409:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/serviceMgmt/ChannelMapBeingModified.json            
+        500:
+          body:
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+    delete: 
+      is: [ needTracking  : { "errorResponse": errorType } ]
+      responses:
+        200: 
+          body:
+            schema: channelMap
+            example: !include ../../schemas/examples/serviceMgmt/channelMap.json
+        400:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/URL_error/CADomain_Not_Supplied.json 
+        404:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/serviceMgmt/LugId_Not_Found.json
+        500:
+          body:
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json
+      
+    /channelEntry/{servcieName}:
+        type: { externalIdentifiedMember : { errorResponse: errorType, schemaType: channelMapEntry, objectType: channelMapEntry, key: "caDomainId,channelMapId,servcieName" } }
+        uriParameters:
+          servcieName:
+            minLength: 1
+            maxLength: 20
+            displayName: Service Name
+            type: string
+        get:
+          is: [ multiCaDomain : { errorResponse: errorType }, allowTracking  ]
+          responses:
+            200: 
+              body:
+                schema: channelMapEntry
+                example: !include ../../schemas/examples/serviceMgmt/channelMapEntry.json 
+            400:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/URL_error/CADomain_Not_Supplied.json 
+            404:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/generic/SourceId_Not_Found.json          
+     
+            500:
+              body:
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+        post:
+          is: [ singleCaDomain : { errorResponse: errorType }, needTracking : { "errorResponse": errorType }  ]
+          body: 
+            schema: channelMapEntry
+            example: !include ../../schemas/examples/serviceMgmt/channelMapEntry.json
+          responses:
+            201: 
+              body:
+                schema: channelMapEntry
+                example: !include ../../schemas/examples/serviceMgmt/channelMapEntry.json
+            400:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/URL_error/CADomain_Not_Supplied.json 
+            404:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/generic/SourceId_Not_Found.json                            
+            409:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/serviceMgmt/Channel_Number_Already_InUse.json            
+            500:
+              body:
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+        put:
+          is: [ singleCaDomain : { errorResponse: errorType }, needTracking : { "errorResponse": errorType }  ]
+          body: 
+            schema: channelMapEntry
+            example: !include ../../schemas/examples/serviceMgmt/channelMapEntry.json
+          responses:
+            200: 
+              body:
+                schema: channelMapEntry
+                example: !include ../../schemas/examples/serviceMgmt/channelMapEntry.json
+            201: 
+              body:
+                schema: channelMapEntry
+                example: !include ../../schemas/examples/serviceMgmt/channelMapEntry.json
+            400:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/URL_error/CADomain_Not_Supplied.json 
+            404:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/generic/SourceId_Not_Found.json                 
+            409:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/serviceMgmt/Channel_Number_Already_InUse.json            
+            500:
+              body:
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+        delete: 
+          is: [ needTracking  : { "errorResponse": errorType } ]
+          responses:
+            200: 
+              body:
+                schema: channelMapEntry
+                example: !include ../../schemas/examples/serviceMgmt/channelMapEntry.json
+            400:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/URL_error/CADomain_Not_Supplied.json
+            404:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/generic/SourceId_Not_Found.json    
+            500:
+              body:
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json
+
+/sourceChanInfos: 
+  type: { readOnlyCollection: {  errorResponse: errorType, memberObjectType: sourceChanInfo,  memberSchemaType: sourceChanInfo, collectionSchemaType: sourceChanInfos } }
+  get:
+    is: [ allowPagination, allowTracking,  multiCaDomain : { errorResponse: errorType }]
+    responses:
+       200:
+        body:
+          schema: sourceChanInfos
+          example: !include ../../schemas/examples/serviceMgmt/sourceChanInfos.json 
+       204:
+        body:
+          schema: errorType
+          example: !include ../../schemas/examples/general/error/URL_error/Empty_List.json
+       400:
+         body: 
+           schema: errorType
+           example: !include ../../schemas/examples/general/error/URL_error/CADomain_Not_Supplied.json
+       404:
+         body: 
+           schema: errorType
+           example: !include ../../schemas/examples/general/error/APP_error/generic/SourceId_Not_Found.json
+       500:
+         body:
+           schema: errorType
+           example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json       
+ 

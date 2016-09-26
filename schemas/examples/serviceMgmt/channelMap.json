@@ -1,0 +1,21 @@
+{
+   "channelMapId" : 1,
+   "channelEntries" :
+    [
+	   {   "servcieName": "HBO",
+	      "displaychannelNumber":"1"
+	   },
+	   {
+	      "servcieName": "MOVIE",
+	      "displaychannelNumber":"2"
+	   },
+	   {
+	   	  "servcieName": "ENCE",
+	      "displaychannelNumber":"3"
+	   },
+	   {
+	   	  "servcieName": "MAXE",
+	      "displaychannelNumber":"4"
+	   }
+   ]
+ }

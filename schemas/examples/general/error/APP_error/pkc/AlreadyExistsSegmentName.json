@@ -1,0 +1,4 @@
+{ 
+  "appErrorCode" : 201
+  ,"appErrorString" : "Another Segment with same name already exists."  
+}

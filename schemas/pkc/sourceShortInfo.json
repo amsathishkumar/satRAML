@@ -1,0 +1,39 @@
+{
+	"id": "http://vcs.cisco.com/schemas",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"sourceShortInfo": 
+	{
+		"id": "#/pkc/sourceShortInfo",
+		"description": "captures the shortSourceInfo qualifiers",
+		"type": "object",
+		"properties": 
+		{
+			"caDomainId": 
+			{
+				"description": "Provided on GET response to indicate the CA Domain ID of this entry. [Optional] In POST verified against QueryParameter if present",
+				"$ref": "general/reference.json#/definitions/caDomainId"
+			},
+
+			"sourceId": 
+			{
+				"description": "Identifies the Source ID",
+				"$ref": "general/reference.json#/definitions/sourceId"
+			},
+
+			"sourceName": 
+			{
+				"description": "Identifies the Source Name",
+				"$ref": "general/reference.json#/definitions/sourceName"
+			}
+		},
+
+		"required": 
+		[
+			"caDomainId",
+			"sourceId",
+			"sourceName"
+		],
+
+		"additionalProperties": false
+	}
+}

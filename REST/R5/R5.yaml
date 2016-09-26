@@ -1,0 +1,426 @@
+#%RAML 0.8
+---
+title: "R5"
+version: v1
+documentation: 
+  - title: Approach
+    content: |
+       R5 - REST API for managing logical topology elements like Hub/BSG and Inband MPEG Multicast, 
+       OOB Multicast streams.
+       
+  - title: Logical Toplogy Elements
+    content: |
+       Headend: 
+          - Logical entity that represents one Market.  Typically addressed by one ESN+DTACS control system.
+       
+       Hub: 
+          - Logical entity that represents one OOB Flow + IB Flow combination point.
+          - Typically Service Information (SI) is addressible to this logical entity.
+          - Multiple OOB bridges are assigned to this logical entity.      
+       
+       AMM Zone: 
+          - Logical entity in the DTA world under a given headend that attributes to one In-band AMM output.
+          - Currently this is used to represent one Time zone.
+                  
+       Broadcast Service Group (BSG): 
+          - Logical entity in the DTA world under a given headend that attributes to one In-band Service Information (SI) output.
+          - This typically is synonymous to Hub.  But with difference that multiple Hubs having same SI can be merged into one BSG.
+          - This construct is required to address the challenge of IB QAMs being straddled across Hubs.
+       
+  - title: Logical Toplogy Hierachy
+    content: |
+       The data managed by this API is organized as follows.
+           * Headend: Headend-1 (ESN + DTACS 5.0 = caDomain)
+              * AMM Zone: 
+                * BSG-1: 
+                   * HUB-1
+                   * HUB-2
+                * BSG-2: 
+                   * HUB-3
+              * AMM Zone: 
+                * BSG-3: 
+                   * HUB-4
+           * Headend: Headend-2 (ESN + DTACS 5.0 = caDomain)
+              * AMM Zone: 
+                * BSG-4: 
+                   * HUB-5 
+                   * HUB-6
+                   
+       As the "AMM Zone" and "BSG" are constructs used in DTACS, the model is re-organized to make 
+       references to the core hub model.
+       
+           * Headend: (ESN + DTACS 5.0 = caDomain)
+              * HUBs: 
+                 * HUB-1 (TZ-1)
+                 * HUB-2 (TZ-1)
+                 * HUB-3 (TZ-2)
+              * BSGs: 
+                 * BSG-1 (linked to HUBs = HUB-1, HUB-2)
+                 * BSG-2 (linked to HUBs = HUB-3)
+                 * BSG-3 (linked to HUBs = HUB-5, HUB-6)
+              * AMM Zones: 
+                 * AMM Zone1 (linked to BSG-1, BSG-2)
+                 * AMM Zone2 (linked to BSG-3)
+
+           * Headend: (ESN + DTACS 5.0 = caDomain)
+              * HUBs: 
+                 * HUB-5 (TZ-3)
+                 * HUB-6 (TZ-3)
+              * BSGs: 
+                 * BSG-4 (linked to HUBs = HUB-5, HUB-6)
+              * AMM Zones: 
+                 * AMM Zone3 (linked to BSG-4)
+ 
+
+       As the data is organized in a  hierachical model of elements, and all 
+       the operations can be incorporated as CRUD operations on these basic values, 
+       a "data-model" approach for the API was built.
+       
+  - title: Logical Toplogy Element Properties
+    content: |
+       The Goal for R5 interface is to be able to adminster the transport parmeters for the various IB and 
+       OOB flows originating from the Controllers.
+       
+       This is required for the uber controller like BVSM to align the PID routing or Session creation action
+       with these IP stream outputs as the source.
+       
+       The various possible IB and OOB flows are given below.
+       
+           * Headend: (ESN + DTACS 5.0 = caDomain)
+              * IB-Prog-Streams: 
+                 * BFS Source 1 ( Multicast IP, Program Number, Bandwidth, Target="DHCT" )
+                 * BFS Source 2 ( Multicast IP, Program Number, Bandwidth, Target="DHCT" )
+                 * BFS Source n ( Multicast IP, Program Number, Bandwidth, Target="DHCT" )             
+              * IB-PID-Streams: 
+                 * AGM ( Correlation Type="AGM", Correlation Tag="", 
+                   Multicast IP, PID, Bandwidth, Target="DTA" )
+                 * CAT ( Correlation Type="CAT", Correlation Tag="", 
+                   Multicast IP, PID, Bandwidth, Target="DTA" )
+          
+           * BSG:
+              * IB-PID-Streams: 
+                 * SI/CVT IP Stream ( Correlation Type="SI", Correlation Tag="<BSG>", 
+                   Multicast IP, PID, Bandwidth, Target="DTA" )
+                 * AMM_FRC IP Stream ( Correlation Type="AMM_FRC", Correlation Tag="<BSG>", 
+                   Multicast IP, PID, Bandwidth, Target="DTA" )
+          
+           * AMM Zone: 
+              * IB-PID-Streams: 
+                 * AMM Zone ( Correlation Type="AMM", Correlation Tag="<AMM_ZONE>", 
+                   Multicast IP, PID, Bandwidth, Target="DTA" )
+          
+           * HUB: 
+              * TBD
+              
+  - title: Scope of operation
+    content: |
+    
+           * Headend: (ESN + DTACS 5.0 = caDomain)
+              * Parameters: 
+                 * Source IP: (IP Addresses, Target="DHCT") - Read-only - Configured on Instance
+                 * Source IP: (IP Addresses, Target="DTA") - Read-only - Configured on Instance
+              * Parameters:                               
+
+                
+mediaType: application/json
+resourceTypes: 
+  - !include ../general/resourceTypes.yaml
+traits: 
+  - !include ../general/traits.yaml
+schemas:
+  - headend : !include ../../schemas/serviceMgmt/headend.json 
+  - errorType: !include ../../schemas/general/errorType.json    
+baseUri: http://baseaddress/{version}
+/headends:
+  type: { autoEmbeddedKeyCollection: {  errorResponse: errorType, key: "headendName" } }
+  get:
+    is: [ allowPagination, allowTracking,  multiCaDomain : { errorResponse: errorType }]
+    responses:
+      200: 
+        body: 
+          schema: headends
+          example: !include ../../schemas/examples/serviceMgmt/headends.json 
+      400:
+        body: 
+          schema: errorType
+          example: !include ../../schemas/examples/general/error/URL_error/BothPageNumAndRecordsPerPageReqd.json
+      404:
+        body: 
+          schema: errorType
+          example: !include ../../schemas/examples/general/error/APP_error/pkc/CADomain_Not_Found.json
+      500:
+        body: 
+          schema: errorType
+          example: !include ../../schemas/examples/general/error/APP_error/pkc/AppInternalError.json 
+  /{caDomainId}: 
+    type: { externalIdentifiedMember : { errorResponse: errorType, schemaType: headend, objectType: headend, key: "caDomainId" } }
+    is: [ multiCaDomain : { errorResponse: errorType } ]
+    uriParameters:
+      sourceId:
+        minLength: 1
+        maxLength: 20
+        displayName: CADomain ID
+        type: string
+    get:
+      is: [ allowTracking ]
+      responses:
+        200: 
+          body:
+            schema: headend
+            example: !include ../../schemas/examples/serviceMgmt/headend.json
+        400:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/URL_error/CADomain_Not_Supplied.json 
+        404:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/pkc/SourceId_Not_Found.json 
+        500:
+          body:
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/pkc/AppInternalError.json 
+    post:
+      is: [ needTracking  : { "errorResponse": errorType }  ]
+      body: 
+          schema: source
+          example: !include ../../schemas/examples/serviceMgmt/headend.json
+      responses:
+        200: 
+          body:
+            schema: source
+            example: !include ../../schemas/examples/serviceMgmt/headend.json
+        201: 
+          body:
+            schema: source
+            example: !include ../../schemas/examples/serviceMgmt/headend.json
+        400:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/URL_error/CADomain_Not_Supplied.json 
+        404:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/pkc/SourceId_Not_Found.json
+        409:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/pkc/AlreadyExistsSourceName.json            
+        500:
+          body:
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/pkc/AppInternalError.json 
+    delete: 
+      is: [ needTracking  : { "errorResponse": errorType } ]
+      responses:
+        200: 
+          body:
+            schema: source
+            example: !include ../../schemas/examples/pkc/source.json
+        400:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/URL_error/CADomain_Not_Supplied.json 
+        404:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/pkc/SourceId_Not_Found.json          
+        500:
+          body:
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/pkc/AppInternalError.json 
+    /segments: 
+      type: { autoEmbeddedKeyCollection : { errorResponse: errorType, key: "segmentName" } }
+      is: [ singleCaDomain : { errorResponse: errorType } ]
+      get: 
+        is: [ allowPagination, allowTracking ]
+        responses:
+          200: 
+            body: 
+              schema: segments
+              example: !include ../../schemas/examples/pkc/segments.json 
+          400:
+            body: 
+              schema: errorType
+              example: !include ../../schemas/examples/general/error/URL_error/BothPageNumAndRecordsPerPageReqd.json
+          404:
+            body: 
+              schema: errorType
+              example: !include ../../schemas/examples/general/error/APP_error/pkc/SourceId_Not_Found.json
+          500:
+            body: 
+              schema: errorType
+              example: !include ../../schemas/examples/general/error/APP_error/pkc/AppInternalError.json         
+      post:
+        is: [ needTracking  : { "errorResponse": errorType } ]
+        body: 
+          schema: segment
+          example: !include ../../schemas/examples/pkc/segment.json
+        responses:
+          200:
+            body: 
+              schema: segment
+              example: !include ../../schemas/examples/pkc/segment.json 
+          201:
+            body: 
+              schema: segment
+              example: !include ../../schemas/examples/pkc/segment.json  
+          400:
+            body: 
+              schema: errorType
+              example: !include ../../schemas/examples/general/error/URL_error/CADomain_Not_Supplied.json  
+          404:
+            body: 
+              schema: errorType
+              example: !include ../../schemas/examples/general/error/APP_error/pkc/CADomain_Not_Found.json
+          409:
+            body: 
+              schema: errorType
+              example: !include ../../schemas/examples/general/error/APP_error/pkc/AlreadyExistsSourceName.json            
+          500:
+            body: 
+              schema: errorType
+              example: !include ../../schemas/examples/general/error/APP_error/pkc/AppInternalError.json   
+      /shortInfos: 
+         type: { readOnlyCollection : { errorResponse: errorType, memberObjectType: segmentShortInfo, memberSchemaType: segmentShortInfo, collectionSchemaType: segmentShortInfos } }
+         is: [ multiCaDomain : { errorResponse: errorType } ]
+         get:
+           is: [ allowPagination, allowTracking ]     
+           responses:
+            200: 
+              body: 
+                schema: segmentShortInfo
+                example: !include ../../schemas/examples/pkc/segmentShortInfos.json 
+            400:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/URL_error/BothPageNumAndRecordsPerPageReqd.json
+            404:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/pkc/SourceId_Not_Found.json
+            500:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/pkc/AppInternalError.json         
+      /{segmentName}: 
+        type: { externalIdentifiedMember : { errorResponse: errorType, schemaType: segment, objectType: segment, key: "caDomainId,sourceId,segmentName" } }
+        is: [ singleCaDomain : { errorResponse: errorType } ]
+        uriParameters:
+          segmentName:
+            minLength: 1
+            maxLength: 20
+            displayName: Segment Name
+            type: string
+        get: 
+          is: [ allowTracking ]
+          responses:
+            200: 
+              body:
+                schema: segment
+                example: !include ../../schemas/examples/pkc/segment.json
+            400: 
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/URL_error/CADomain_Not_Supplied.json 
+            404:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/pkc/SegmentName_Not_Found.json 
+            500:
+              body:
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/pkc/AppInternalError.json 
+        post: 
+          is: [ needTracking : { "errorResponse": errorType }  ]
+          body: 
+            schema: segment
+            example: !include ../../schemas/examples/pkc/segment.json
+          responses:
+            200: 
+              body:
+                schema: segment
+                example: !include ../../schemas/examples/pkc/segment.json
+            201: 
+              body:
+                schema: segment
+                example: !include ../../schemas/examples/pkc/segment.json
+            400:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/URL_error/CADomain_Not_Supplied.json 
+            404:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/pkc/SegmentName_Not_Found.json
+            409:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/pkc/AlreadyExistsSegmentName.json            
+            500:
+              body:
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/pkc/AppInternalError.json 
+        delete: 
+          is: [ needTracking  : { "errorResponse": errorType }  ]
+          responses:
+            200: 
+              body:
+                schema: segment
+                example: !include ../../schemas/examples/pkc/segment.json
+            400:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/URL_error/CADomain_Not_Supplied.json 
+            404:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/pkc/SegmentName_Not_Found.json          
+            500:
+              body:
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/pkc/AppInternalError.json 
+/segments: 
+   type: { readOnlyCollection : { errorResponse: errorType, memberObjectType: segment, memberSchemaType: segment, collectionSchemaType: segments } }
+   is: [ multiCaDomain : { errorResponse: errorType }, subCollection : { errorResponse: errorType } ]
+   get: 
+     is: [ allowPagination, allowTracking ]
+     responses:
+       200: 
+         body: 
+           schema: segments
+           example: !include ../../schemas/examples/pkc/segments.json 
+       400:
+         body: 
+           schema: errorType
+           example: !include ../../schemas/examples/general/error/URL_error/UnknownSortByColumn.json
+       404:
+         body: 
+           schema: errorType
+           example: !include ../../schemas/examples/general/error/APP_error/pkc/CADomain_Not_Found.json
+       500:
+         body:
+           schema: errorType
+           example: !include ../../schemas/examples/general/error/APP_error/pkc/AppInternalError.json       
+   /shortInfos: 
+      type: { readOnlyCollection : { errorResponse: errorType, memberObjectType: segmentShortInfo, memberSchemaType: segmentShortInfo, collectionSchemaType: segmentShortInfos } }
+      is: [ multiCaDomain : { errorResponse: errorType }, subCollection : { errorResponse: errorType } ]
+      get: 
+        is: [ allowPagination, allowTracking ]
+        responses: 
+          200: 
+            body: 
+              schema: segmentShortInfos
+              example: !include ../../schemas/examples/pkc/segmentShortInfos.json 
+          400:
+            body: 
+              schema: errorType
+              example: !include ../../schemas/examples/general/error/URL_error/UnknownSortByColumn.json
+          404:
+            body: 
+              schema: errorType
+              example: !include ../../schemas/examples/general/error/APP_error/pkc/CADomain_Not_Found.json
+          500:
+            body:
+              schema: errorType
+              example: !include ../../schemas/examples/general/error/APP_error/pkc/AppInternalError.json

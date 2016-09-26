@@ -1,0 +1,20 @@
+{
+	"caDomainId": "1234",
+	"sourceId": 1234,
+	"status": "ACTIVE",
+	"sourceName": "HBO",
+	"description": "HBO Movie channel",
+	"acRef" : "950204D2",
+	"contentType": "SD",
+	"sourceSecurities" : [
+	   {
+	     "securityMode" : "ENCRYPTED"
+	   }
+	],
+	"SCC_SourceParams" : {
+	  "DTA_applicable" : true,
+	  "SCC_Mode" : "PREVIEW",
+	  "isDLNA" : false
+	},
+	"extAcRefs" : []
+}

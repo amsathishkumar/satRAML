@@ -1,0 +1,38 @@
+[
+		{
+			"packageName": "Gold",
+			"packageType": "SUBSCRIPTION",
+			"description":"Gold type subscription package",
+			"pkPackageEid": 123,
+			"status": "ACTIVE"
+		},
+
+		{
+			"packageName": "Grp23",
+			"packageType": "DTA_GROUP_AUTHCODE",
+			"description":"DTA Group authcode package",
+			"status": "ACTIVE",
+			"groupId": 23
+		},
+
+		{
+			"packageName": "DtaHDFlag",
+			"packageType": "DTA_HD_AUTHCODE",
+			"description":"DTA HD package",
+			"status": "ACTIVE"
+		},
+
+		{
+			"packageName": "VCT678",
+			"packageType": "DTA_ONLY",
+			"description":"It is a DTA only package",
+			"status": "ACTIVE"
+		},
+
+		{
+			"packageName": "PPV02345",
+			"packageType": "PPV",
+			"description":"It is a PPV packages",
+			"status": "ACTIVE"
+		}
+]

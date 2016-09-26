@@ -1,0 +1,25 @@
+#R1_traits.yaml
+qSourceId:
+      queryParameters:
+        qSourceId:
+          description: <<objectType>> part of source with given SourceId
+          minimum: 1
+          maximum: 65535
+          type: integer
+          required: false
+qPackageName:
+      queryParameters:
+        qPackageName:
+          description: <<objectType>> part of package with given PackageName
+          minLength: 1
+          maxLength: 20
+          type: string
+          required: false
+qSegmentName:
+      queryParameters:
+        qSourceId:
+          description: <<objectType>> containing the segment with given Segment Name
+          minLength: 1
+          maxLength: 20
+          type: string
+          required: false

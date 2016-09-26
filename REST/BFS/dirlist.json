@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://dbds.vcs.cisco.com/bfs",
+  "type": "array",
+  "items": {
+    "id": "http://dbds.vcs.cisco.com/bfs/0",
+    "type": "object",
+    "properties": {
+      "name": {
+        "id": "http://dbds.vcs.cisco.com/bfs/0/name",
+        "type": "string"
+      },
+      "type": {
+        "id": "http://dbds.vcs.cisco.com/bfs/0/type",
+        "type": "string",
+        "enum": [
+          "dir",
+          "file"
+        ]
+      },
+      "sourceId": {
+        "id": "http://dbds.vcs.cisco.com/bfs/0/sourceId",
+        "type": "integer"
+      },
+      "length": {
+        "id": "http://dbds.vcs.cisco.com/bfs/0/length",
+        "type": "integer"
+      },
+      "deliveryMode": {
+        "id": "http://dbds.vcs.cisco.com/bfs/0/deliveryMode",
+        "type": "string",
+        "enum" : [
+        	"local",
+        	"server"
+        ]
+      },            
+      "required" : [
+    	"name",
+    	"type"
+      ]
+    }
+  }
+}

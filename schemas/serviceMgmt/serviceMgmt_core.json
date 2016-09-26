@@ -1,0 +1,213 @@
+{
+	"id": "http://vcs.cisco.com/schemas",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"definitions": 
+	{
+		"id": "#/definitions",
+		"headendId" : {
+			"description" : "Identifier for Headend"
+			,"type" : "integer"
+			,"minimum" : 1
+			,"maximum" : 255
+		}
+		,"headendName" : {
+			"description" : "Name of the  Headend"
+			,"type" : "string"
+			,"minLength" : 1
+			,"maxLength" : 20
+		}
+		, "targetType" : {
+			"description" : "Target of data"
+			,"enum" : [
+				"DHCT"
+				,"DTA"
+				,"DHCT/DTA"
+			]
+		}
+		,"hubId" : {
+			"description" : "Identifier for HUB"
+			,"type" : "integer"
+			,"minimum" : 1
+			,"maximum" : 255
+		}
+		,"hubName" : {
+			"description" : "Name of the  Hub"
+			,"type" : "string"
+			,"minLength" : 1
+			,"maxLength" : 20
+		},
+		"timeZone": {
+			"description" : "Time Zone configured for the Hub"
+			,"type" : "string"
+			
+		},
+		"hubNameList" : {
+			"description" : "List of Hubs"
+			,"type" : "array"
+			,"items" : {
+			  "$ref" : "#/definitions/hubName"
+			}
+		},
+		
+		"channelMapId" : {
+			"description" : "Identifier for LineupGroup/ChannelMap"
+			,"type" : "integer"
+			,"minimum" : 1
+			,"maximum" : 255
+		}
+		,"channelMapName" : {
+			"description" : "Name of the LineupGroup/ChannelMap"
+			,"type" : "string"
+			,"minLength" :1,
+			"maxLength" :20
+		},
+		
+		"easSuppression":{
+			"description":"Indicates if EAS Flag is enabled for the source ",
+			"type":"boolean"
+		},
+		"isDTApplicable" :{
+			"description": "Indicates if the Source is applicable for DTACS or not",
+			"type": "boolean"
+		},
+		"defaultChannleNum":{
+			"description":" Default Channel Number specifed for the Source  ",
+			"type":"integer",
+			"minimum":1,
+			"maximum":65535
+		},
+		"isPPVEnabled": {
+		   "description": "Indicates if the Source is PPV Enabled or not",
+			"type": "boolean"
+		},
+		"isHDSource" :{
+		   "description": "Indicates if the Source HighDefinition Source or not",
+			"type": "boolean",
+			"default": "false"
+		},
+		"is3DSource" :{
+		   "description": "Indicates if the Source is a 3D Source or not",
+			"type": "boolean",
+			"default": "false"
+		},
+		"isMpeg4" :{
+		   "description": "Indicates if the Compression techinque for the Source is MPEG4 or not",
+			"type": "boolean",
+			"default": "false"
+		},
+		"securityMode":{
+			"description":"Mode of security for the source",
+			"enum":[
+				"CLEAR",
+				"ENCRYPTED"
+			],
+			"default" : "CLEAR"
+		},
+		"frequency":{
+			"description":"RF Frequency for the downstream channel for STB",
+			"type":"integer",
+			"minimum":1,
+			"maximum":65535
+		},
+		"programNum":{
+			"description":"MPEG Program number to uniquely identify a specific program in MPTS/SPTS ",
+			"type":"integer",
+			"minimum":1,
+			"maximum":65535
+		},
+		"modulationMode":{
+			"description":"Captrures QAM Modulation Mode",
+			"enum":[
+				"64",
+				"256",
+				"512",
+				"1024"
+			],
+			"default":"256"
+		},
+		"displaychannelNumber":{
+			"description":"Virtual Channel Number of a program mapped on the Channel Map",
+			"type":"integer",
+			"minimum":1,
+			"maximum":1999
+		},
+		"sdvStatus" : {
+		     "description" :" Prvided status of the SDV Status of a Source",
+		     "enum":[
+		     	"None",
+		     	"Active",
+		     	"Inactive"
+		     ],
+		     "default":"None"
+		},
+		"servcieName" : {
+			"description": "Identies the Unique Service defined in the system.",
+			"type" : "string"		
+		},
+		"shortDescription":{
+			"description": "Short Description of the Service.",
+			"type" : "string"
+		},
+		"longDescription": {
+			"description": "Long Description of the Service",
+			"type" : "string"
+		},
+		"applicationURL":{
+			"description": "Application URL",
+			"type" : "string"
+		},
+		"logo" : {
+			"description" : "Logo for the Service",
+			"type": "integer"
+		},
+		"paramValue" : {
+			"description": "Indicates the SourceId for which the Service is mapped to",
+			"type" : "integer",
+			"MINIMUM":1,
+			"MAXIMUM":65535
+		},
+		"paramString" : {
+			"description": "Indicates the SourceId for which the Service is mapped to",
+			"type" : "string"
+		},
+		"channelEntry" :{
+		   "description" : "Captures SourceId-Servivce-Channel Assiciation ",
+		   	"type": "object",
+			"properties": 
+			{
+			  "servcieName": {
+			    "$ref": "serviceMgmt_core.json#/definitions/servcieName"
+			  },
+			  "displaychannelNumber" :{
+			    "$ref": "#/definitions/displaychannelNumber"
+			  }
+			   
+			},
+			"required": 
+				[
+					"servcieName",
+					"displaychannelNumber"
+				],
+				"additionalProperties": false
+		},
+		"lugInfo" :{
+			"description": "Captures ChannelNumber to Source Information in a ChannelMap",
+			"type": "object",
+			"properties":
+			{
+			  "channelMapId" :{
+			      "$ref": "serviceMgmt_core.json#/definitions/channelMapId"
+			  },
+			  "chanInfo" : {
+			     "type": "array",
+				 "minItems": 1,
+				 "items": 
+				 {
+					"$ref": "serviceMgmt_core.json#/definitions/channelEntry"
+			     }
+			  }
+			   
+			}	
+		}
+	}
+}

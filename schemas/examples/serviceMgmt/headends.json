@@ -1,0 +1,64 @@
+
+{
+	"totSize": 2,
+	"retSize": 2,
+	"retStartIndex": 1,
+	"elements": 
+	[
+		{
+	"headendId": 1,
+	"headendName": "Mkt-1",
+	"caDomainId": "cad1234",
+	"ips": 
+	[
+		{
+			"target": "DHCT",
+			"ip": "192.168.1.1"
+		},
+
+		{
+			"target": "DHCT",
+			"ip": "192.168.1.2"
+		},
+
+		{
+			"target": "DTA",
+			"ip": "192.168.2.1"
+		},
+
+		{
+			"target": "DTA",
+			"ip": "192.168.2.2"
+		}
+	]
+},
+		
+	    {
+	"headendId": 2,
+	"headendName": "Mkt-2",
+	"caDomainId": "cad123",
+	"ips": 
+	[
+		{
+			"target": "DHCT",
+			"ip": "192.168.1.1"
+		},
+
+		{
+			"target": "DHCT",
+			"ip": "192.168.1.2"
+		},
+
+		{
+			"target": "DTA",
+			"ip": "192.168.2.1"
+		},
+
+		{
+			"target": "DTA",
+			"ip": "192.168.2.2"
+		}
+	]
+}
+	]
+}

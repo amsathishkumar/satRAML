@@ -1,0 +1,5 @@
+{ 
+  "urlErrorCode" : "OK"
+  ,"appErrorCode" : 301
+  ,"appErrorString" : "ChannelNumber is already used by another service."  
+}

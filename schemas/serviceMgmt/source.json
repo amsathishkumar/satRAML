@@ -1,0 +1,87 @@
+{
+	"id": "http://vcs.cisco.com/schemas",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"properties":
+	{
+		"source": 
+		{
+			"id": "#/source",
+			"description": "captures the source qualifiers",
+			"type": "object",
+			"properties": 
+			{
+				"caDomainId": 
+				{
+					"description": "Provided on GET response to indicate the CA Domain ID of this entry. [Optional] In POST verified against QueryParameter if present",
+					"$ref": "general/reference.json#/definitions/caDomainId"
+				},
+	
+				"sourceId": 
+				{
+					"description": "Identifies the Source ID",
+					"$ref": "general/reference.json#/definitions/sourceId"
+				},
+	
+				"status": 
+				{
+					"description": "GET only parameter, Ignored if supplied in POST",
+					"$ref": "general/reference.json#/definitions/status"
+				},
+	
+				"sourceName": 
+				{
+					"description": "Identifies the Source Name",
+					"$ref": "general/reference.json#/definitions/sourceName"
+				},
+				"securityMode": 
+				{
+					"description": "Identifies Security mode of the source.",
+					"$ref": "serviceMgmt_core.json#/definitions/securityMode"
+				},
+				"isHDSource" :
+				{
+					"description": "Identifies if the Source HighDefinition Source or not",
+					"$ref": "serviceMgmt_core.json#/definitions/isHDSource"
+				},
+				"is3DSource" :
+				{
+					"description": "Identifies if the Source is a 3D Source or not",
+					"$ref": "serviceMgmt_core.json#/definitions/is3DSource"
+				},
+				"isMpeg4" :
+				{
+					"description": "Identifies  if the Compression techinque for the Source is MPEG4 or not",
+					"$ref": "serviceMgmt_core.json#/definitions/isMpeg4"
+				},
+				"sdvStatus" :
+				{
+					"description": "Indicates  status of the SDV Status of a Source",
+					"$ref": "serviceMgmt_core.json#/definitions/sdvStatus"
+				},
+				"easSuppression": 
+				{
+					"description": "Flag to idenify the eas suppression flag.",
+					"$ref": "serviceMgmt_core.json#/definitions/easSuppression"
+				},
+				"defaultChannleNum" :
+				{
+				   "description":" Default Channel Number specifed for the Source  ",
+				   "$ref": "serviceMgmt_core.json#/definitions/defaultChannleNum"
+				},
+				"isPPVEnabled": 
+				{
+				   "description":"Indicates if the Source is PPV Enabled or not  ",
+				   "$ref": "serviceMgmt_core.json#/definitions/isPPVEnabled"
+				}
+			},
+	
+			"required": 
+			[
+				"sourceId","sourceName","securityMode","isHDSource","is3DSource","isMpeg4","SDVStatus","easSuppression",
+				"defaultChannleNum","isPPVEnabled"
+			],
+	
+			"additionalProperties": false
+		}
+	}	
+}

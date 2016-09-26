@@ -1,0 +1,51 @@
+{
+	"id": "http://vcs.cisco.com/schemas",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"properties":
+	{
+		"sourceChanInfo": 
+		{
+			"id": "#/sourceChanInfo",
+			"description": "captures the source qualifiers",
+			"type": "object",
+			"properties": 
+			{
+				"caDomainId": 
+				{
+					"description": "Provided on GET response to indicate the CA Domain ID of this entry. [Optional] In POST verified against QueryParameter if present",
+					"$ref": "general/reference.json#/definitions/caDomainId"
+				},
+	
+				"sourceId": 
+				{
+					"description": "Identifies the Source ID",
+					"$ref": "general/reference.json#/definitions/sourceId"
+				},
+	
+				"status": 
+				{
+					"description": "GET only parameter, Ignored if supplied in POST",
+					"$ref": "general/reference.json#/definitions/status"
+				},
+				"lugInfos" :
+				{
+					"type": "array",
+					"minItems": 1,
+					"items": 
+					{
+						"$ref": "serviceMgmt_core.json#/definitions/lugInfo"
+					}
+				  
+				}
+			},
+	
+			"required": 
+			[
+				"sourceId","sourceName","securityMode","isDTApplicable","sourceQualifier","easSuppression",
+				"defaultChannleNum","isPPVEnabled"
+			],
+	
+			"additionalProperties": false
+		}
+	}	
+}

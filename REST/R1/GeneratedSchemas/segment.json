@@ -1,0 +1,181 @@
+{
+    "id": "http://vcs.cisco.com/schemas", 
+    "$schema": "http://json-schema.org/draft-04/schema#", 
+    "segment": {
+        "id": "#/pkc/segment", 
+        "description": "Captures the information of a segment", 
+        "type": "object", 
+        "properties": {
+            "caDomainId": {
+                "description": "Identifier for a CA Domain. Similar to  ECID for a given ESN.", 
+                "type": "string", 
+                "minLength": 1, 
+                "maxLength": 20
+            }, 
+            "sourceId": {
+                "description": "Identifier for a Linear source.  Similar to ATSC SI sourceId Range(0-0xFFFF).  Though 0-0xFFF is another range that exists.", 
+                "type": "integer", 
+                "minimum": 1, 
+                "maximum": 65535
+            }, 
+            "segmentName": {
+                "description": "Name of the segment.  Atomic unit of source that can be sold.", 
+                "type": "string", 
+                "maxLength": 20
+            }, 
+            "status": {
+                "description": "status of the object. GET only parameter", 
+                "enum": [
+                    "CREATE_IN_PROGRESS", 
+                    "ACTIVE", 
+                    "DELETE_IN_PROGRESS", 
+                    "DELETED"
+                ]
+            }, 
+            "segmentDuration": {
+                "description": "Duration of the segment", 
+                "type": "object", 
+                "properties": {
+                    "startTime": {
+                        "description": "date time of the start of the segment.  If not supplied, assumed NOW", 
+                        "effectiveTime": {
+                            "description": "Indicates the date time for element to be effective.", 
+                            "type": "string", 
+                            "format": "date-time"
+                        }
+                    }, 
+                    "limitedDuration": {
+                        "description": "if limited duration this is included.  if excluded considered as unlimited segment.", 
+                        "repeatInterval": {
+                            "description": "Captures the repeat interval type and value.", 
+                            "type": "object", 
+                            "properties": {
+                                "isRepeat": {
+                                    "type": "boolean", 
+                                    "default": false
+                                }, 
+                                "repeatDuration": {
+                                    "duration": {
+                                        "description": "Captures the duration of a limited duration package.", 
+                                        "type": "object", 
+                                        "properties": {
+                                            "unit": {
+                                                "enum": [
+                                                    "SECS", 
+                                                    "MINS", 
+                                                    "HOURS"
+                                                ], 
+                                                "default": "NO_REPEAT"
+                                            }, 
+                                            "length": {
+                                                "type": "integer", 
+                                                "minimum": 0, 
+                                                "maximum": 255, 
+                                                "default": 0
+                                            }
+                                        }
+                                    }
+                                }
+                            }, 
+                            "required": [
+                                "isRepeat"
+                            ], 
+                            "additionalProperties": false
+                        }
+                    }
+                }, 
+                "required": [
+                    "startTime", 
+                    "limitedDuration"
+                ], 
+                "additionalProperties": false
+            }, 
+            "blackOut": {
+                "description": "Captures the blackOut values of a segment.", 
+                "type": "object", 
+                "properties": {
+                    "BlackoutControlType": {
+                        "enum": [
+                            "NONE", 
+                            "BLACKOUT", 
+                            "SPOTLIGHT"
+                        ], 
+                        "default": "NONE"
+                    }, 
+                    "centroidX": {
+                        "type": "integer", 
+                        "minimum": 0, 
+                        "maximum": 255, 
+                        "default": 0
+                    }, 
+                    "centroidY": {
+                        "type": "integer", 
+                        "minimum": 0, 
+                        "maximum": 255, 
+                        "default": 0
+                    }, 
+                    "radius": {
+                        "type": "integer", 
+                        "minimum": 0, 
+                        "maximum": 255, 
+                        "default": 0
+                    }
+                }, 
+                "required": [
+                    "BlackoutControlType"
+                ], 
+                "additionalProperties": false
+            }, 
+            "fingerPrint": {
+                "description": "Captures the fingerPrint values of a segment.", 
+                "type": "object", 
+                "properties": {
+                    "FingerPrintControlType": {
+                        "enum": [
+                            "NONE", 
+                            "VISIBLE", 
+                            "INVISIBLE"
+                        ], 
+                        "default": "NONE"
+                    }
+                }, 
+                "required": [
+                    "FingerPrintControlType"
+                ], 
+                "additionalProperties": false
+            }, 
+            "copyProtection": {
+                "description": "Captures the copyProtection values of a segment.", 
+                "enum": [
+                    "PERMITTED", 
+                    "PROHIBITTED", 
+                    "PURCHASABLE", 
+                    "NEVER"
+                ], 
+                "default": "PERMITTED"
+            }, 
+            "macroVisionProtection": {
+                "description": "Captures the macroVisionProtection values of a segment.", 
+                "enum": [
+                    "DISABLED", 
+                    "ENABLED", 
+                    "FOLLOW_PACKAGE_DEF"
+                ], 
+                "default": "DISABLED"
+            }, 
+            "citFlag": {
+                "description": "Captures the citFlag values of a segment.", 
+                "enum": [
+                    "CLEAR", 
+                    "SET"
+                ], 
+                "default": "CLEAR"
+            }
+        }, 
+        "required": [
+            "sourceId", 
+            "segmentName"
+        ], 
+        "additionalProperties": false
+    }
+}

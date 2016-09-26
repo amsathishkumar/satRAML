@@ -1,0 +1,98 @@
+#ACman traits.yaml
+start:
+      queryParameters:
+        start:
+          displayName: Start time of AC package.
+          type: string
+          example: "2015-01-15T16:00:00Z"
+          pattern: "^([0-9]{1}|[0-9]{2}|[0-9]{3}||[0-9]{4}|[0-9]{5}|[0-9]{6}|[0-9]{7}|[0-9]{8}|[0-9]{9}|[0-4][0-2][0-9]{8})([ ]*,[ ]*([0-9]|[0-9]{2}|[0-9]{3}||[0-9]{4}|[0-9]{5}|[0-9]{6}|[0-9]{7}|[0-9]{8}|[0-9]{9}|[0-4][0-2][0-9]{8}))*$"       
+          repeat: false
+          required: false
+supportPaging:
+      headers:
+        X-total-count:
+          displayName: Total Records.
+          type: integer
+          required: true    
+          repeat: false
+      queryParameters:
+        limit:
+          displayName: Records per page.
+          type: integer
+          minimum: 1
+          default: 10
+          required: false    
+          repeat: false
+        offset:
+          displayName: Starting Record.
+          type: integer
+          minimum: 0
+          default: 10
+          required: false    
+          repeat: false
+        sort:
+          displayName: Sorting selection.
+          type: string
+          default: "+acRef,+start,+superCasId"
+          example: "+acRef,-start,+superCasId"
+          pattern: "^([+-]([A-Za-z0-9])+([ ]*,[ ]*[+-]([A-Za-z0-9])+)*$"
+          required: false    
+          repeat: false
+ids:
+      queryParameters:
+        ids:
+          displayName: "Comma seperated values of ID (1-4294967296)."
+          type: string
+          pattern: "^([0-9]{1}|[0-9]{2}|[0-9]{3}||[0-9]{4}|[0-9]{5}|[0-9]{6}|[0-9]{7}|[0-9]{8}|[0-9]{9}|[0-4][0-2][0-9]{8})([ ]*,[ ]*([0-9]|[0-9]{2}|[0-9]{3}||[0-9]{4}|[0-9]{5}|[0-9]{6}|[0-9]{7}|[0-9]{8}|[0-9]{9}|[0-4][0-2][0-9]{8}))*$"       
+          repeat: false
+          required: false 
+allowTimeRange: 
+      queryParameters:
+        from:
+          displayName: "From Date UTC (ISO 8601)"
+          type: string
+          example: "2015-01-15T16:00:00Z"
+          pattern: "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+          repeat: false
+          required: false 
+        to:
+          displayName: "To Date UTC (ISO 8601)"
+          type: string
+          example: "2015-01-15T16:00:00Z"
+          pattern: "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"        
+          repeat: false
+          required: false
+oneSuperCas: 
+      queryParameters:
+        superCasId:
+          displayName: "Super CAS ID - {2 MSB bytes=CA_System_ID, 2 LSB bytes=CA_SubSystem_ID}"
+          type: integer
+          example: 234881024
+          minimum: 0
+          maximum: 4294967296
+          repeat: false
+          required: false 
+multiSuperCas: 
+      queryParameters:
+        superCasIds:
+          displayName: "Comma seperated values of Super CAS ID - {2 MSB bytes=CA_System_ID, 2 LSB bytes=CA_SubSystem_ID}"
+          type: string
+          example: 234881024,235995136
+          pattern: "^([0-9]{1}|[0-9]{2}|[0-9]{3}||[0-9]{4}|[0-9]{5}|[0-9]{6}|[0-9]{7}|[0-9]{8}|[0-9]{9}|[0-4][0-2][0-9]{8})([ ]*,[ ]*([0-9]|[0-9]{2}|[0-9]{3}||[0-9]{4}|[0-9]{5}|[0-9]{6}|[0-9]{7}|[0-9]{8}|[0-9]{9}|[0-4][0-2][0-9]{8}))*$"       
+          repeat: false
+          required: false
+acRefs:
+      queryParameters:
+        acRefs:
+          displayName: "Comma seperated values of ACRefs"
+          type: string
+          example: 1234,2345
+          pattern: "^(([A-Za-z0-9])+([ ]*,[ ]*([A-Za-z0-9])+)*$"       
+          repeat: false
+          required: false
+state:
+      queryParameters:
+        state:
+          displayName: "Filter by state"
+          enum: [ALL, ACTIVE, INACTIVE]
+          default: ACTIVE

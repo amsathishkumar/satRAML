@@ -1,0 +1,18 @@
+#R2_traits.yaml
+
+qChildPackageName:
+      queryParameters:
+        qPackageName:
+          description: <<objectType>> that given package identified by Packagename is part of
+          minLength: 1
+          maxLength: 20
+          type: string
+          required: false
+qSegmentName:
+      queryParameters:
+        qSourceId:
+          description: <<objectType>> containing the segment with given Segment Name
+          minLength: 1
+          maxLength: 20
+          type: string
+          required: false

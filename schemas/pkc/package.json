@@ -1,0 +1,98 @@
+{
+	"id": "http://vcs.cisco.com/schemas",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"source": 
+	{
+		"id": "#/pkc/package",
+		"description": "captures the pacakge qualifiers",
+		"type": "object",
+		"properties": 
+		{
+			"caDomainId": 
+			{
+				"description": "Provided on GET response to indicate the CA Domain ID of this entry. [Optional] In POST verified against QueryParameter if present",
+				"$ref": "general/reference.json#/definitions/caDomainId"
+			},
+
+			"packageId": 
+			{
+				"description": "Identifies the Package ID",
+				"$ref": "pkc/pkc_core.json#/definitions/packageId"
+			},
+
+			"status": 
+			{
+				"description": "GET only parameter, Ignored if supplied in POST",
+				"$ref": "general/reference.json#/definitions/status"
+			},
+
+			"packageName": 
+			{
+				"description": "Identifies the Package Name",
+				"$ref": "pkc/pkc_core.json#/definitions/packageName"
+			},
+			
+			"description": 
+			{
+				"$ref": "pkc/pkc_core.json#/definitions/packageDescription"
+			},
+
+			"packageType": 
+			{
+				"$ref": "pkc/pkc_core.json#/definitions/packageType"
+			},
+
+			"dtaGroupId": 
+			{
+				"$ref": "pkc/pkc_core.json#/definitions/dtaGroupId"
+			},
+
+			"pkPackageEid": 
+			{
+			    "description" : "If present in Create/Update evaluate using the same EID (not generate a new one).",
+				"$ref": "pkc/pkc_core.json#/definitions/pkPackageEid"
+			},
+
+			"segments": 
+			{
+				"description": "List of segments part of this package",
+				"$ref": "pkc/pkc_core.json#/definitions/segmentNameList"
+			},
+
+			"subPackages": 
+			{
+				"description": "List if sub-part of this segment.  Only possible for SUBSCRITION packages",
+				"$ref": "pkc/pkc_core.json#/definitions/packageNameList"
+			},
+
+			"limitedDuration": 
+			{
+				"description": "Only possible for PPV packages",
+				"effectiveTime": 
+				{
+					"description": "Limited Duration package starttime.",
+					"$ref": "pkc/pkc_core.json#/definitions/effectiveTime"
+				},
+
+				"duration": 
+				{
+					"description": "Limited Duration package duration.",
+					"$ref": "pkc/pkc_core.json#/definitions/duration"
+				},
+				"required": 
+				[
+					"effectiveTime",
+					"duration"
+				]
+			}
+		},
+
+		"required": 
+		[
+			"packageName",
+			"packageType"
+		],
+
+		"additionalProperties": false
+	}
+}

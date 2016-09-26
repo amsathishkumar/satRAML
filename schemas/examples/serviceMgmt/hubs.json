@@ -1,0 +1,21 @@
+{
+	"totSize": 2,
+	"retSize": 2,
+	"retStartIndex": 1,
+	"elements": 
+	[
+		{
+		 "caDomainId": "caD1234",
+		  "hubId": "1",
+		  "hubName": "Hub1"
+	
+		},
+
+		{
+		   "caDomainId": "caD1234",
+		   "hubId": "2",
+		  "hubName": "Hub2"
+		
+		}
+	]
+}

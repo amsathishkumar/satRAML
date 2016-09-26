@@ -1,0 +1,35 @@
+﻿1)REST URL praser (URL,method,requestjson,response)from RAML
+INPUT: 
+  Layer 1 & 2 parsed-done
+  Layer 3 & above-pending
+OUTPUT: LINKED HASH MAP: 
+  		Key: URL~METHOD~INPUT SCHEMA~200
+  		value: RESPONSE SCHEMA
+
+2)JSON String for REST request & response: 
+	Permute of JSON structure:
+		1) simple - done
+		2) ArrayString-pending
+		3) SubArray-pending
+	Permute of JSON values:
+		1) scalar
+			a)integer - done(with sample list data)
+			b-String- done(with sample list data)
+			c-boolean-pending
+			d-float-pending
+		2)enum -pending
+		3)custom -pending
+                4)other - pending
+		
+2) Generic Cucumber StepDef to RAML TGC
+3) cucumber.feature generation for praser REST URL's
+	myparts of the string extract...
+#    supParts returned from subjects
+#    For each subPart
+#        GenerateTestCase(schemaObjectPart, testConfigPbjectPart, PartOfTestContextIdx) : JSO
+# }
+# 
+# 
+# speed - map() - parllel processing
+# Look at libraries available for permutation
+# come up with a scheme for nameing the tests

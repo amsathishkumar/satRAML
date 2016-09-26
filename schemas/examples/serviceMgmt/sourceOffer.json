@@ -1,0 +1,11 @@
+{
+	"caDomainId": "caD1234",
+	"sourceId": "1234",
+	"offerType" :
+	{
+		"type" : "watchtv",
+		"offerName" : "HBO",
+		"shortDescr" : "HBO", 
+	    "longDescr" : "HBO Long" 
+    }
+}

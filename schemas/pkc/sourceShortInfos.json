@@ -1,0 +1,16 @@
+{
+	"id": "http://vcs.cisco.com/schemas",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"sourceShortInfos": 
+	{
+		"id": "#/pkc/sourceShortInfos",
+		"description": "captures the list of source qualifiers",
+		"type": "array",
+		"items": 
+				{
+					"$ref": "pkc/sourceShortInfo.json#/sourceShortInfo"
+				},
+		
+		"additionalProperties": false
+	}
+}

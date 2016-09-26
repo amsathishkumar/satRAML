@@ -1,0 +1,30 @@
+{
+	"totSize": 2,
+	"retSize": 2,
+	"retStartIndex": 1,
+	"elements": 
+	[
+		{
+		   "caDomainId": "caD1234",
+		   "servcieName": "HBO",
+		   "shortDescription": "HBO1",
+		   "longDescription" : "HBO for EAST",
+		   "appliCationURL" : "bfs://resapp/watchtv",
+		   "logo" : 0,
+		   "paramValue" : 1101,
+		   "paramString" : ""
+		},
+		
+	    {
+		  "caDomainId": "caD1234",
+		   "servcieName": "ESPN",
+		   "shortDescription": "ESPN",
+		   "longDescription" : "ESPN for EAST",
+		   "appliCationURL" : "bfs://resapp/watchtv",
+		   "logo" : 0,
+		   "paramValue" : 1102,
+		   "paramString" : ""
+		      
+		}
+	]
+}

@@ -1,0 +1,443 @@
+#%RAML 0.8
+---
+title: "R3"
+version: v1
+documentation: 
+  - title: Approach
+    content: |
+       R1 - REST API for managing service information (SI) with service management.
+      
+  - title: Logical Toplogy Elements
+    content: |
+       Headend: 
+          - Logical entity that represents one Market.  Typically addressed by one ESN+DTACS control system.
+       
+       Hub: 
+          - Logical entity that represents one OOB Flow + IB Flow combination point.
+          - Typically Service Information (SI) is addressible to this logical entity.
+          - Multiple OOB bridges are assigned to this logical entity.      
+      
+       Source:
+          - Entity to configure Source Id, Name, Additional Parameters to qualify the source( as HD/3D/MPEG4 , SDV, PPV etc)
+     
+       Service:
+          - Entity to configure Servie information on ESN with URL,Description,Logo,SourceId etc. ( Equivalent of SAM )
+    
+       TunigInfo:
+          - Entity to configire Liner Session( 3rd Party Source Defs) for a given Source applicable to HUB.
+          - Contains Tuning Triplets( Freq,Program Number, Mod Type) for a  Source.                
+         
+  - title: Data organization
+    content: |
+         The data managed by this API is organized as follows.
+           * Hub: Hub1
+              *  Source: 1001 - HBO ( Tuning information ) 
+              *  Source: 1002 - PBS ( Tuning information ) 
+              *  Source: 1003 - ESPN ( Tuning information ) 
+           * Hub: Hub2
+              *  Source: 1001 - HBO ( Tuning information ) 
+              *  Source: 1002 - PBS ( Tuning information ) 
+              *  Source: 1003 - ESPN ( Tuning information ) 
+           * BSG: BSG1
+              *  Source: 1001 - HBO ( Tuning information ) 
+              *  Source: 1002 - PBS ( Tuning information ) 
+              *  Source: 1003 - ESPN ( Tuning information ) 
+              
+         There are 2 possible ways the SI information for DTACS can be propogated.
+           * External Entity is aware of HUB and BSG topology
+           * External Entity is aware of only HUB topology and Service Management maps the HUB to 
+             BSG topology internally
+           
+         The API defined exposes the BSG entity and allows for modification if the BSG-HUB mapping is
+         not performed internally.
+         
+  - title: Scope of operation
+    content: |       
+           * CRUD operation for Source and ServiceInformation. 
+           * CRUD operations for Tuning parameters for a Source-Hub Combination. 
+           * Note that HUB Management will happen on ESN.
+           * Service Management module will provdide interface to create SAM  
+         
+                
+mediaType: application/json
+resourceTypes: 
+  - !include ../general/resourceTypes.yaml
+traits: 
+  - !include ../general/traits.yaml
+  - !include ../R3/R3_traits.yaml  
+schemas: 
+  - source: !include ../../schemas/serviceMgmt/source.json
+  - sources: !include ../../schemas/serviceMgmt/sources.json
+  - services: !include ../../schemas/serviceMgmt/services.json
+  - service: !include ../../schemas/serviceMgmt/service.json
+  - tuningInfo: !include ../../schemas/serviceMgmt/tuningInfo.json
+  - tuningInfos: !include ../../schemas/serviceMgmt/tuningInfos.json
+  - errorType: !include ../../schemas/general/errorType.json    
+baseUri: http://baseaddress/{version}
+/sources:
+  type: { readOnlyCollection: {  errorResponse: errorType, memberObjectType: source,  memberSchemaType: source, collectionSchemaType: sources } }
+  get:
+    is: [ allowPagination, allowTracking,  multiCaDomain : { errorResponse: errorType }, qSourceId: {objectType: source},qSourceName: {objectType: source}]
+    responses:
+      200: 
+        body: 
+          schema: sources
+          example: !include ../../schemas/examples/serviceMgmt/sources.json
+      204:
+        body:
+          schema: errorType
+          example: !include ../../schemas/examples/general/error/URL_error/Empty_List.json     
+      400:
+        body: 
+          schema: errorType
+          example: !include ../../schemas/examples/general/error/URL_error/BothPageNumAndRecordsPerPageReqd.json
+      404:
+        body: 
+          schema: errorType
+          example: !include ../../schemas/examples/general/error/APP_error/generic/CADomain_Not_Found.json
+      500:
+        body: 
+          schema: errorType
+          example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+  /{sourceId}:
+    type: { externalIdentifiedMember : { errorResponse: errorType, schemaType: source, objectType: source, key: "caDomainId,sourceId" } }
+    is: [ multiCaDomain : { errorResponse: errorType } ]
+    uriParameters:
+      sourceId:
+        minimum: 1
+        maximum: 65535
+        displayName: Source ID
+        type: integer
+    get:
+      is: [ allowTracking ]
+      responses:
+        200: 
+          body:
+            schema: source
+            example: !include ../../schemas/examples/serviceMgmt/source.json
+        400:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/URL_error/CADomain_Not_Supplied.json 
+        404:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/SourceId_Not_Found.json 
+        500:
+          body:
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+    post:
+      is: [  singleCaDomain : { errorResponse: errorType }, needTracking  : { "errorResponse": errorType }   ]
+      body: 
+          schema: source
+          example: !include ../../schemas/examples/serviceMgmt/source.json
+      responses:
+        201: 
+          body:
+            schema: source
+            example: !include ../../schemas/examples/serviceMgmt/source.json
+        400:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/URL_error/CADomain_Not_Supplied.json 
+        409:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/pkc/AlreadyExistsSourceName.json            
+        500:
+          body:
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+    put:
+      is: [  singleCaDomain : { errorResponse: errorType }, needTracking  : { "errorResponse": errorType }  ]
+      body: 
+          schema: source
+          example: !include ../../schemas/examples/serviceMgmt/source.json
+      responses:
+        200: 
+          body:
+            schema: source
+            example: !include ../../schemas/examples/serviceMgmt/source.json
+        201: 
+          body:
+            schema: source
+            example: !include ../../schemas/examples/serviceMgmt/source.json
+        400:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/URL_error/CADomain_Not_Supplied.json 
+        500:
+          body:
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json             
+    delete: 
+      is: [ needTracking  : { "errorResponse": errorType } ]
+      responses:
+        200: 
+          body:
+            schema: source
+            example: !include ../../schemas/examples/serviceMgmt/source.json
+        400:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/URL_error/CADomain_Not_Supplied.json 
+        404:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/SourceId_Not_Found.json          
+        500:
+          body:
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+
+/services:
+  type: { readOnlyCollection: {  errorResponse: errorType, memberObjectType: service,  memberSchemaType: service, collectionSchemaType: services } }
+  get:
+    is: [ allowPagination, allowTracking,  multiCaDomain : { errorResponse: errorType }, qServiceName: { objectType: service}]
+    responses:
+      200: 
+        body: 
+          schema: services
+          example: !include ../../schemas/examples/serviceMgmt/services.json
+      204:
+        body:
+          schema: errorType
+          example: !include ../../schemas/examples/general/error/URL_error/Empty_List.json     
+      400:
+        body: 
+          schema: errorType
+          example: !include ../../schemas/examples/general/error/URL_error/BothPageNumAndRecordsPerPageReqd.json
+      404:
+        body: 
+          schema: errorType
+          example: !include ../../schemas/examples/general/error/APP_error/generic/CADomain_Not_Found.json
+      500:
+        body: 
+          schema: errorType
+          example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+
+
+  /{serviceName}:
+    type: { externalIdentifiedMember : { errorResponse: errorType, schemaType: service, objectType: service, key: "caDomainId,serviceName" } }
+    is: [ multiCaDomain : { errorResponse: errorType } ]
+    uriParameters:
+      serviceName:
+        displayName: Service 
+        type: string
+    get:
+      is: [ allowTracking ]
+      responses:
+        200: 
+          body:
+            schema: service
+            example: !include ../../schemas/examples/serviceMgmt/service.json
+        400:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/URL_error/CADomain_Not_Supplied.json 
+        404:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/serviceMgmt/Service_Not_Found.json 
+        500:
+          body:
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+    post:
+      is: [  singleCaDomain : { errorResponse: errorType }, needTracking  : { "errorResponse": errorType }   ]
+      body: 
+          schema: service
+          example: !include ../../schemas/examples/serviceMgmt/service.json
+      responses:
+        201: 
+          body:
+            schema: service
+            example: !include ../../schemas/examples/serviceMgmt/service.json
+        400:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/URL_error/CADomain_Not_Supplied.json 
+        409:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/serviceMgmt/AlreadyExistsServiceName.json            
+        500:
+          body:
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+    put:
+      is: [  singleCaDomain : { errorResponse: errorType }, needTracking  : { "errorResponse": errorType }  ]
+      body: 
+          schema: service
+          example: !include ../../schemas/examples/serviceMgmt/service.json
+      responses:
+        200: 
+          body:
+            schema: service
+            example: !include ../../schemas/examples/serviceMgmt/service.json
+        201: 
+          body:
+            schema: service
+            example: !include ../../schemas/examples/serviceMgmt/service.json
+        400:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/URL_error/CADomain_Not_Supplied.json 
+        500:
+          body:
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json             
+    delete: 
+      is: [ needTracking  : { "errorResponse": errorType } ]
+      responses:
+        200: 
+          body:
+            schema: service
+            example: !include ../../schemas/examples/serviceMgmt/service.json
+        400:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/URL_error/CADomain_Not_Supplied.json 
+        404:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/serviceMgmt/Service_Not_Found.json          
+        500:
+          body:
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+
+            
+/tuningInfos:
+      type: { readOnlyCollection : { errorResponse: errorType, memberObjectType: tuningInfo,  memberSchemaType: tuningInfo, collectionSchemaType: tuningInfos } }
+      is: [ allowPagination, allowTracking,  multiCaDomain : { errorResponse: errorType }, qHubId: { objectType: tuningInfo }, qSourceId: { objectType: tuningInfo  }]
+      get: 
+        responses:
+          200: 
+            body: 
+              schema: tuningInfos
+              example: !include ../../schemas/examples/serviceMgmt/tuningInfos.json 
+          400:
+            body: 
+              schema: errorType
+              example: !include ../../schemas/examples/general/error/URL_error/BothPageNumAndRecordsPerPageReqd.json
+          404:
+            body: 
+              schema: errorType
+              example: !include ../../schemas/examples/general/error/APP_error/generic/SourceId_Not_Found.json
+          500:
+            body: 
+              schema: errorType
+              example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json         
+      /{hubId}/{sourceId}: 
+        type: { externalIdentifiedMember : { errorResponse: errorType, schemaType: tuningInfo, objectType: tuningInfo, key: "caDomainId,sourceId,hubId" } }
+        is: [ singleCaDomain : { errorResponse: errorType } ]
+        uriParameters:
+          sourceId:
+            minimum: 1
+            maximum: 65535
+            displayName: Source ID
+            type: integer
+        get: 
+          is: [ allowTracking, multiCaDomain : { errorResponse: errorType }  ]
+          responses:
+            200: 
+              body:
+                schema: tuningInfo
+                example: !include ../../schemas/examples/serviceMgmt/tuningInfo.json
+            400: 
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/URL_error/CADomain_Not_Supplied.json 
+            404:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/generic/SourceId_Not_Found.json 
+            500:
+              body:
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+        post: 
+          is: [ singleCaDomain : { errorResponse: errorType }, needTracking  : { "errorResponse": errorType }  ]
+          body: 
+            schema: tuningInfo
+            example: !include ../../schemas/examples/serviceMgmt/tuningInfo.json
+          responses:
+            201: 
+              body:
+                schema: tuningInfo
+                example: !include ../../schemas/examples/serviceMgmt/tuningInfo.json
+            400:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/URL_error/CADomain_Not_Supplied.json 
+            404:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/generic/SourceId_Not_Found.json
+            409:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/serviceMgmt/FrequencyAlreadyInUse.json            
+            410:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/serviceMgmt/DuplicateProgramNum.json
+            500:
+              body:
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+        put: 
+          is: [ singleCaDomain : { errorResponse: errorType }, needTracking  : { "errorResponse": errorType }  ]
+          body: 
+            schema: tuningInfo
+            example: !include ../../schemas/examples/serviceMgmt/tuningInfo.json
+          responses:
+            200: 
+              body:
+                schema: tuningInfo
+                example: !include ../../schemas/examples/serviceMgmt/tuningInfo.json
+            201: 
+              body:
+                schema: tuningInfo
+                example: !include ../../schemas/examples/serviceMgmt/tuningInfo.json
+            400:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/URL_error/CADomain_Not_Supplied.json 
+            404:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/generic/SourceId_Not_Found.json
+            409:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/serviceMgmt/FrequencyAlreadyInUse.json            
+            410:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/serviceMgmt/DuplicateProgramNum.json
+            500:
+              body:
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+        delete: 
+          is: [ needTracking  : { "errorResponse": errorType }  ]
+          responses:
+            200: 
+              body:
+                schema: tuningInfo
+                example: !include ../../schemas/examples/serviceMgmt/tuningInfo.json
+            400:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/URL_error/CADomain_Not_Supplied.json 
+            404:
+              body: 
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/generic/SourceId_Not_Found.json          
+            500:
+              body:
+                schema: errorType
+                example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 

@@ -1,0 +1,72 @@
+{
+	"id": "http://vcs.cisco.com/schemas",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"properties":
+	{
+		"headend": 
+		{
+			"id": "#/headend",
+			"description": "captures the headend qualifiers",
+			"type": "object",
+			"properties": 
+			{
+				"caDomainId": 
+				{
+					"$ref": "general/reference.json#/definitions/caDomainId"
+				},
+	
+				"headendId": 
+				{
+					"description": "Identifies the Headend ID",
+					"$ref": "serviceMgmt_core.json#/definitions/headendId"
+				},
+	
+				"headendName": 
+				{
+					"description": "Identifies the Headend Name",
+					"$ref": "serviceMgmt_core.json#/definitions/headendName"
+				},
+	
+				"ips": 
+				{
+					"description": "IP address of the controllers, that is source for Multicast flows",
+					"type": "array",
+					"items": 
+					{
+						"type": "object",
+						"properties": 
+						{
+							"ip": 
+							{
+								"$ref": "general/ipAddress.json#/definitions/IpAddressv4"
+							},
+	
+							"target": 
+							{
+								"$ref": "serviceMgmt_core.json#/definitions/targetType"
+							}
+						},
+	
+						"required": 
+						[
+							"ip",
+							"target"
+						]
+					},
+	
+					"minItems": 1
+				}
+			},
+	
+			"required": 
+			[
+				"headendId",
+				"headendName",
+				"caDomainId",
+				"ips"
+			],
+	
+			"additionalProperties": false
+		}
+	}
+}

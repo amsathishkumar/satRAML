@@ -1,0 +1,107 @@
+	{
+		"totSize": 2,
+		"retSize": 2,
+		"retStartIndex": 1,
+		"elements": 
+		[
+			{
+	   "channelMapId" : 1,
+	   "channelEntries" :
+	    [
+		   {
+		     "sourceId": "1234",
+			 "offerType" :
+			 {
+				"type" : "watchtv", 
+				"shortDescr" : "HBO", 
+			    "longDescr" : "HBO Long" 
+		     },
+		      "displaychannelNumber":"101"
+		   },
+		   {
+		     "sourceId": "1234",
+			 "offerType" :
+			{
+				"type" : "ippv", 
+				"shortDescr" : "HBO", 
+			    "longDescr" : "HBO Long" 
+		    },
+		      "displaychannelNumber":"102"
+		   },
+		   
+		   {
+		     "sourceId": "1101",
+			 "offerType" :
+			{
+				"type" : "watchtv", 
+				"shortDescr" : "ENCE", 
+			    "longDescr" : "Encore" 
+		    },
+		      "displaychannelNumber":"103"
+		   },
+		   
+		   {
+		     "sourceId": "1102",
+			 "offerType" :
+			{
+				"type" : "watchtv", 
+				"shortDescr" : "ESPN", 
+			    "longDescr" : "ESPN Long" 
+		    },
+		      "displaychannelNumber":"104"
+		   }
+		  
+	   ]
+	 },
+	 
+	 {
+	   "channelMapId" : 2,
+	   "channelEntries" :
+	    [
+		   {
+		     "sourceId": "1234",
+			 "offerType" :
+			{
+				"type" : "watchtv", 
+				"shortDescr" : "HBO", 
+			    "longDescr" : "HBO Long" 
+		    },
+		      "displaychannelNumber":"201"
+		   },
+		   {
+		     "sourceId": "1234",
+			 "offerType" :
+			{
+				"type" : "ippv", 
+				"shortDescr" : "HBO", 
+			    "longDescr" : "HBO Long" 
+		    },
+		      "displaychannelNumber":"202"
+		   },
+		   
+		   {
+		     "sourceId": "1101",
+			 "offerType" :
+			{
+				"type" : "watchtv", 
+				"shortDescr" : "ENCE", 
+			    "longDescr" : "Encore" 
+		    },
+		      "displaychannelNumber":"203"
+		   },
+		   
+		   {
+		     "sourceId": "1102",
+			 "offerType" :
+			{
+				"type" : "watchtv", 
+				"shortDescr" : "ESPN", 
+			    "longDescr" : "ESPN Long" 
+		    },
+		      "displaychannelNumber":"204"
+		   }
+		  
+	   ]
+	 }
+		]
+	}

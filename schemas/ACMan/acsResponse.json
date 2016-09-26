@@ -1,0 +1,87 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"id": "http://schemas.nds.com/json/cp/om/bo/v1/acman/live/acs-response",
+	"definitions": 
+	{
+		"date-time-utc": 
+		{
+			"description": "UTC date in ISO 8601 presentation. example: 2015-01-15T16:00:00Z",
+			"type": "string",
+			"pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+		},
+
+		"acRef": 
+		{
+			"description": "Reference ID that AC information is queried with.",
+			"type": "string",
+			"minLength": 1,
+			"pattern": "^[A-Za-z0-9]+$"
+		}
+	},
+
+	"type": "array",
+	"items": 
+	{
+		"type": "object",
+		"properties": 
+		{
+			"id": 
+			{
+				"type": "string"
+			},
+
+			"superCasId": 
+			{
+				"type": "string"
+			},
+
+			"start": 
+			{
+				"$ref": "#/definitions/date-time-utc"
+			},
+
+			"eocw": 
+			{
+				"$ref": "#/definitions/date-time-utc"
+			},
+
+			"ac": 
+			{
+				"type": "string"
+			},
+
+			"acRefs": 
+			{
+				"type": "array",
+				"minItems": 1,
+				"items": 
+				{
+					"$ref": "#/definitions/acRef"
+				},
+
+				"uniqueItems": true
+			},
+
+			"state": 
+			{
+				"enum": 
+				[
+					"ALL",
+					"ACTIVE",
+					"INACTIVE"
+				]
+			}
+		},
+
+		"required": 
+		[
+			"id",
+			"superCasId",
+			"start",
+			"eocw",
+			"ac",
+			"acRefs",
+			"state"
+		]
+	}
+}

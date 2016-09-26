@@ -1,0 +1,23 @@
+{
+	"totSize": 2,
+	"retSize": 2,
+	"retStartIndex": 1,
+	"elements": 
+	[
+		{
+			"sourceId": "1234",
+		 	"hubId": "1",
+			"frequency": "555",
+			"programNo": "12",
+			"modulationMode": "256"
+		},
+
+		{
+			"sourceId": "1100",
+		 	"hubId": "2",
+			"frequency": "561",
+			"programNo": "13",
+			"modulationMode": "256"
+		}
+	]
+}

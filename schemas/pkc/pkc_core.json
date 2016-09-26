@@ -1,0 +1,471 @@
+{
+	"id": "http://vcs.cisco.com/schemas",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"definitions": 
+	{
+		"id": "#pkc/definitions",
+		"acRefValue": 
+		{
+			"description": "Reference Access Criteria value used as lookup index",
+			"type": "string",
+			"minLength": 1,
+			"maxLength": 255
+		},
+
+		"acRef": 
+		{
+		    
+			"description": "Reference Access Critirea that an External CCAP/SCS device can query for ECM with. Stored as hex-string",
+			"type": "string",
+			"properties": 
+			{
+				"isUsed": 
+				{
+					"description": "indicates if this is setup on the ECMG sub-system for query from CCAP/SCS.  False, when extAc is used.",
+					"type": "boolean"
+				},
+
+				"acRefValue": 
+				{
+					"extend": 
+					{
+						"$ref": "#/definitions/acRefValue"
+					}
+				},
+
+				"required": 
+				[
+					"isUsed",
+					"acRefValue"
+				],
+
+				"additionalProperties": false
+			}
+		},
+
+		"extAcRef": 
+		{
+			"description": "extAcRef supplied into PKC to prep up the ECMG for SCS query. Generally supplied with CaSystemId adminstered. When extAcRef is supplied internal acRef will not be adminstered on ECMG for lookup.",
+			"type": "object",
+			"properties": 
+			{
+				"acRefValue": 
+				{
+					"$ref": "#/definitions/acRefValue"
+				},
+
+				"casSystemId": 
+				{
+					"description": "CASystemId = 0x0E00 for PowerKEY, 0x0E11 for SCP",
+					"type": "integer",
+					"minimum": 0,
+					"maximum": 65535
+				},
+
+				"casSubSystemId": 
+				{
+					"description": "CA SubSystem ID = user customized for a given region",
+					"type": "integer",
+					"minimum": 0,
+					"maximum": 65535
+				},
+
+				"required": 
+				[
+					"acRefValue"
+				],
+
+				"additionalProperties": false
+			}
+		},
+
+		"extAcRefs": 
+		{
+			"description": "List of Reference Access Critireas that an External EIS system has adminstered on the SCS for this source that SCS can query for ECM with",
+			"type": "array",
+			"minOccurs": 0,
+			"maxOccurs": 255,
+			"items": 
+			{
+				"$ref": "#/definitions/extAcRef"
+			}
+		},
+
+		"securityMode": 
+		{
+			"description": "Mode of security for the source",
+			"enum": 
+			[
+				"CLEAR",
+				"ENCRYPTED"
+			],
+
+			"default": "ENCRYPTED"
+		},
+
+		"contentType": 
+		{
+			"description": "Captures the content quality for enabling any special encryption. (e.g.) HD content security will indicate special encryption for uDTA",
+			"enum": 
+			[
+				"SD",
+				"SDHighValue",
+				"HD"
+			],
+
+			"default": "SD"
+		},
+
+		"SCC_SourceParams": 
+		{
+			"description": "Captures Source specific parameters configured for SCP/SCC CAS",
+			"type": "object",
+			"properties": 
+			{
+				"DTA_applicable": 
+				{
+					"description": "Indicates if the source is available for DTAs",
+					"type": "boolean"
+				},
+
+				"SCC_Mode": 
+				{
+					"description": "SCC Mode assigned to a given source, ignored if DTA_applicable is false.",
+					"enum": 
+					[
+						"INIT",
+						"PREVIEW",
+						"ENABLED"
+					],
+
+					"default": "INIT"
+				},
+
+				"isDLNA": 
+				{
+					"description": "Indicates if the source is available on DLNA output, ignored if DTA_applicable is false.",
+					"type": "boolean",
+					"default": false
+				}
+			},
+
+			"required": 
+			[
+				"DTA_applicable"
+			],
+
+			"additionalProperties": false
+		},
+
+		"effectiveTime": 
+		{
+			"description": "Indicates the date time for element to be effective.",
+			"type": "string",
+			"format": "date-time"
+		},
+		
+		"duration": 
+		{
+			"description": "Captures the duration of a limited duration package.",
+			"type": "object",
+			"properties" : {
+				"unit": 
+				{
+					"enum": 
+					[
+						"SECS",
+						"MINS",
+						"HOURS"
+					],
+					"default": "NO_REPEAT"
+				},
+
+				"length": 
+				{
+					"type": "integer",
+					"minimum": 0,
+					"maximum": 255,
+					"default": 0
+				}
+			}
+		},
+
+		"repeatInterval": 
+		{
+			"description": "Captures the repeat interval type and value.",
+			"type": "object",
+			"properties": 
+			{
+				"isRepeat" : {
+					"type" : "boolean"
+					,"default" : false
+				}
+				, "repeatDuration" : { "$ref" : "#/definitions/duration" }
+			},
+			"required": 
+			[
+				"isRepeat"
+			],
+			"additionalProperties": false
+		},
+
+		"blackOut": 
+		{
+			"description": "Captures the blackOut values of a segment.",
+			"type": "object",
+			"properties": 
+			{
+				"BlackoutControlType": 
+				{
+					"enum": 
+					[
+						"NONE",
+						"BLACKOUT",
+						"SPOTLIGHT"
+					],
+
+					"default": "NONE"
+				},
+
+				"centroidX": 
+				{
+					"type": "integer",
+					"minimum": 0,
+					"maximum": 255,
+					"default": 0
+				},
+
+				"centroidY": 
+				{
+					"type": "integer",
+					"minimum": 0,
+					"maximum": 255,
+					"default": 0
+				},
+
+				"radius": 
+				{
+					"type": "integer",
+					"minimum": 0,
+					"maximum": 255,
+					"default": 0
+				}
+			},
+
+			"required": 
+			[
+				"BlackoutControlType"
+			],
+
+			"additionalProperties": false
+		},
+
+		"fingerPrint": 
+		{
+			"description": "Captures the fingerPrint values of a segment.",
+			"type": "object",
+			"properties": 
+			{
+				"FingerPrintControlType": 
+				{
+					"enum": 
+					[
+						"NONE",
+						"VISIBLE",
+						"INVISIBLE"
+					],
+
+					"default": "NONE"
+				}
+			},
+
+			"required": 
+			[
+				"FingerPrintControlType"
+			],
+
+			"additionalProperties": false
+		},
+
+		"copyProtection": 
+		{
+			"description": "Captures the copyProtection values of a segment.",
+			"enum": 
+			[
+				"PERMITTED",
+				"PROHIBITTED",
+				"PURCHASABLE",
+				"NEVER"
+			],
+
+			"default": "PERMITTED"
+		},
+
+		"macroVisionProtection": 
+		{
+			"description": "Captures the macroVisionProtection values of a segment.",
+			"enum": 
+			[
+				"DISABLED",
+				"ENABLED",
+				"FOLLOW_PACKAGE_DEF"
+			],
+
+			"default": "DISABLED"
+		},
+
+		"citFlag": 
+		{
+			"description": "Captures the citFlag values of a segment.",
+			"enum": 
+			[
+				"CLEAR",
+				"SET"
+			],
+
+			"default": "CLEAR"
+		},
+
+		"sourceSecurity": 
+		{
+			"description": "captures the source security level applied to a source",
+			"type": "object",
+			"properties": 
+			{
+				"securityMode": 
+				{
+					"$ref": "#/definitions/securityMode"
+				},
+
+				"effectiveTime": 
+				{
+					"description": "captures the effective time for the sourceSecurity to be effected. If omitted is assumed from NOW",
+					"$ref": "#/definitions/effectiveTime"
+				}
+			},
+
+			"required": 
+			[
+				"securityMode",
+				"effectiveTime"
+			],
+
+			"additionalProperties": false
+		},
+
+		"sourceSecurities": 
+		{
+			"description": "List of source security effective on the source.  If more than one item with same Effective Time is encountered, the one with more stringent security level will be used.",
+			"type": "array",
+			"minOccurs": 0,
+			"maxOccurs": "unbounded",
+			"items": 
+			{
+				"$ref": "#/definitions/sourceSecurity"
+			}
+		},
+
+		"segmentName": 
+		{
+			"description": "Name of the segment.  Atomic unit of source that can be sold.",
+			"type": "string",
+			"maxLength": 20
+		},
+
+		"segmentNameList": 
+		{
+			"description": "List of segment Names",
+			"type": "array",
+			"minOccurs": 0,
+			"maxOccurs": "unbounded",
+			"items": 
+			{
+				"$ref": "#/definitions/segmentName"
+			}
+		},
+
+		"segmentDuration": 
+		{
+			"description": "Duration of the segment",
+			"type": "object",
+			"properties": 
+			{
+				"startTime": 
+				{
+					"description": "date time of the start of the segment.  If not supplied, assumed NOW",
+					"$ref": "#/definitions/effectiveTime"
+				},
+
+				"limitedDuration": 
+				{
+					"description": "if limited duration this is included.  if excluded considered as unlimited segment.",
+					"$ref": "#/definitions/repeatInterval"
+				}
+			},
+
+			"required": 
+			[
+				"startTime",
+				"limitedDuration"
+			],
+
+			"additionalProperties": false
+		},
+		
+		"packageName": 
+		{
+			"description": "Name of a Package or AuthCode.  This is the key identifier and and also typically used/assigned to a STB/DTA",
+			"type": "string",
+			"minLength" : 1,
+			"maxLength" : 20
+		},
+		
+	    "packageDescription": 
+		{
+			"description": "Detail of a Package or AuthCode.  This is the key identifier and and also typically used/assigned to a STB/DTA",
+			"type": "string",
+			"minLength" : 1,
+			"maxLength" : 64
+		},
+		
+		"packageNameList": {
+			"description": "List of package Names",
+			"type": "array",
+			"minOccurs" : 0,
+			"maxOccurs" : "unbounded",
+			"items": {
+				"$ref": "#/definitions/packageName"
+			}
+		},
+		
+		"packageType": 
+		{
+			"description": "Type of Package",
+			"enum": 
+			[
+				"SUBSCRIPTION",
+				"PPV",
+				"PPV AND IPPV",
+				"DTA_ONLY",
+				"DTA_GROUP_AUTHCODE",
+				"DTA_HD_AUTHCODE"
+			],
+			"default": "SUBSCRIPTION"
+		},
+		
+		"pkPackageEid": 
+		{
+			"description": "Identifier for a PowerKey Package.",
+			"type": "long",
+			"minimum": 0,
+			"maximum": 4294967295
+		},
+		
+		"dtaGroupId" : {
+			"description": "Identifier of the download Group if packageType = DTA_GROUP_AUTHCODE",
+			"type": "integer",
+			"minimum": 0,
+			"maximum": 15
+		}
+	}
+}

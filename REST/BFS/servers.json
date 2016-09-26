@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://dbds.vcs.cisco.com/bfs",
+  "type": "array",
+  "items": {
+    "id": "http://dbds.vcs.cisco.com/bfs/0",
+    "type": "object",
+    "properties": {
+      "serverName": {
+        "id": "http://dbds.vcs.cisco.com/bfs/0/serverName",
+        "type": "string",
+        "maxLength": 20
+      },
+      "siteName": {
+        "id": "http://dbds.vcs.cisco.com/bfs/0/siteName",
+        "type": "string"
+      },
+      "operationMode": {
+        "id": "http://dbds.vcs.cisco.com/bfs/0/operationMode",
+        "type": "string",
+        "enum": [ "oneway", "twoway" ]
+      },
+      "registrationType": {
+        "id": "http://dbds.vcs.cisco.com/bfs/0/registrationType",
+        "type": "string",
+        "enum" : [ "normal", "restart"]
+      },
+      "sourceId": {
+        "id": "http://dbds.vcs.cisco.com/bfs/0/sourceId",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "serverName",
+      "operationMode",
+      "registrationType",
+      "sourceId"
+    ]
+  },
+  "required": [
+    "0"
+  ]
+}

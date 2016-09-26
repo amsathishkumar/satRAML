@@ -1,0 +1,77 @@
+[
+		{
+			"segmentName": "HBO_East_MV_Enabled",
+			"sourceId": 1234,
+			"status": "ACTIVE",
+			"segmentDuration": 
+			{
+				"startTime": "2015-03-24 00:00:00T+00:00"
+			},
+
+			"blackOut": 
+			{
+				"BlackoutControlType": "NONE",
+				"centroidX": 0,
+				"centroidY": 0,
+				"radius": 0
+			},
+
+			"fingerPrint": 
+			{
+				"FingerPrintControlType": "NONE"
+			},
+
+			"copyProtection": 
+			{
+				"CopyControlType": "PERMITTED"
+			},
+
+			"macroVisionProtection": 
+			{
+				"MacroVisionType": "DISABLED"
+			},
+
+			"citFlag": 
+			{
+				"CITFlag": "CLEAR"
+			}
+		},
+
+		{
+			"segmentName": "HBO_East",
+			"sourceId": 1234,
+			"status": "ACTIVE",
+			"segmentDuration": 
+			{
+				"startTime": "2015-03-24 00:00:00T+00:00"
+			},
+
+			"blackOut": 
+			{
+				"BlackoutControlType": "NONE",
+				"centroidX": 0,
+				"centroidY": 0,
+				"radius": 0
+			},
+
+			"fingerPrint": 
+			{
+				"FingerPrintControlType": "NONE"
+			},
+
+			"copyProtection": 
+			{
+				"CopyControlType": "PERMITTED"
+			},
+
+			"macroVisionProtection": 
+			{
+				"MacroVisionType": "ENABLED"
+			},
+
+			"citFlag": 
+			{
+				"CITFlag": "CLEAR"
+			}
+		}
+]

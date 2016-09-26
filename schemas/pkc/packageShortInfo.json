@@ -1,0 +1,53 @@
+{
+	"id": "http://vcs.cisco.com/schemas",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"segmentShortInfo": 
+	{
+		"id": "#/pkc/packageShortInfo",
+		"description": "Short list of properties required by listing utilities",
+		"type": "object",
+		"properties": 
+		
+		{
+			"caDomainId": 
+			{
+				"$ref": "general/reference.json#/definitions/caDomainId"
+			},
+
+			"packageName": 
+			{
+				"$ref": "pkc/pkc_core.json#/definitions/packageName"
+			},
+			
+			"status": 
+			{
+				"$ref": "general/reference.json#/definitions/status"
+			},
+
+			"packageType": 
+			{
+				"$ref": "pkc/pkc_core.json#/definitions/packageType"
+			},
+
+			"dtaGroupId": 
+			{
+				"$ref": "pkc/pkc_core.json#/definitions/dtaGroupId"
+			},
+
+			"pkPackageEid": 
+			{
+				"$ref": "pkc/pkc_core.json#/definitions/pkPackageEid"
+			}
+		},
+
+		"required": 
+		[
+			"caDomainId",
+			"packageName",
+			"packageType",
+			"status"
+		],
+
+		"additionalProperties": false
+	}
+}

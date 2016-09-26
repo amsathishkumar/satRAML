@@ -1,0 +1,31 @@
+{
+	"totSize": 2,
+	"retSize": 2,
+	"retStartIndex": 1,
+	"elements": 
+	[
+		{
+			"caDomainId": "caD1234",
+			"sourceId": "1234",
+			"offerType": 
+			{
+				"type" : "watchtv",
+				"offerName" : "HBO",
+				"shortDescr" : "HBO", 
+			    "longDescr" : "HBO Long" 
+			} 
+		},
+
+		{
+			"caDomainId": "caD1234",
+			"sourceId": "1234",
+			"offerType" :
+			{	
+				"type" : "ppv",
+				"offerName" : "Encore",
+				"shortDescr" : "Ence", 
+			    "longDescr" : "Encore East" 
+			}
+		}
+	]
+}

@@ -1,0 +1,221 @@
+#resourceTypes.yaml
+
+
+#basic
+#   <<errorResponse>> - Indicates the error payload
+#   <<schemaType>> - Indicates the schema for Response object
+basic:
+      get?: 
+        responses:
+           200: 
+              description: OK. Return retrieved object.
+              body: 
+                schema: <<schemaType>>
+           404: 
+              description: Not Found.
+              body: 
+                schema: <<errorResponse>>
+           500: 
+              description: Internal Error.
+              body:
+                schema: <<errorResponse>> 
+      post?: 
+        body:
+           schema: <<schemaType>>
+        responses:
+           200?: 
+              description: OK. Return updated object.
+              body: 
+                schema: <<schemaType>>
+           201?: 
+              description: Created. Return created object.
+              body: 
+                schema: <<schemaType>>
+           204?: 
+              description: OK. No object.
+           400: 
+              description: Bad Request.
+              body:
+                schema: <<errorResponse>> 
+           404?: 
+              description: Not Found.
+              body:
+                schema: <<errorResponse>>
+           409?:
+              description: Conflict.
+              body:
+                schema: <<errorResponse>>
+           500: 
+              description: Internal Error.
+              body:
+                schema: <<errorResponse>> 
+      delete?: 
+        responses:
+           200?: 
+              description: OK. Return object.
+              body: 
+                schema: <<schemaType>>
+           204?: 
+              description: OK. No Response object.
+           404?: 
+              description: Not Found
+              body:
+                schema: <<errorResponse>>
+           409?:
+              description: Conflict
+              body:
+                schema: <<errorResponse>>
+           500: 
+              description: Internal Error
+              body:
+                schema: <<errorResponse>> 
+                
+                
+#readOnlyMember
+#   <<errorResponse>> - Indicates the error payload
+#   <<schemaType>> - Indicates the schema for Response object
+#   <<objectType>> - Indicates the name of the Response object
+readOnlyMember: 
+      description: Item of <<objectType>> (Read-only).
+      type: { basic : { errorResponse: <<errorResponse>>, schemaType: <<schemaType>> } }
+      get: 
+        description: Retrieves <<objectType>>.
+        responses: 
+          200:
+            description: OK. Return the retrieved object.
+            body: 
+              schema: <<schemaType>>
+          404:  
+            description: Not Found
+            body:
+              schema: <<errorResponse>>  
+                      
+#deletableMember
+#   <<errorResponse>> - Indicates the error payload
+#   <<schemaType>> - Indicates the schema for Response object
+#   <<objectType>> - Indicates the name of the Response object
+deletableMember: 
+      description: Item of <<objectType>> (Read, Delete).
+      type:  { readOnlyMember : { errorResponse: <<errorResponse>>, schemaType: <<schemaType>>, objectType: <<objectType>> } }
+      delete: 
+        description: Deletes <<objectType>>.
+        responses: 
+          200: 
+            description: OK. Return the deleted object.
+            body: 
+              schema: <<schemaType>>
+          404: 
+            body:
+              schema: <<errorResponse>> 
+              
+#externalIdentifiedMember
+#   <<errorResponse>> - Indicates the error payload
+#   <<schemaType>> - Indicates the schema for Response object
+#   <<objectType>> - Indicates the name of the Response object
+#   <<key>> - Indicates the key with which external entity identifies the object
+externalIdentifiedMember: 
+      description: Item of <<objectType>> identified by {<<key>>} (Read, Delete, Post=(Create|Update)).
+      type:   { deletableMember : { errorResponse: <<errorResponse>>, schemaType: <<schemaType>>, objectType: <<objectType>> } }
+      put: 
+        description: Create (if not exist) or Update <<objectType>> identified by {<<key>>}.
+        body:
+          schema: <<schemaType>>
+        responses:
+          200:
+            description: Updated. Return the updated object.
+          201:
+            description: Created. Return the created object.
+          400: 
+            body:
+              schema: <<errorResponse>> 
+          409: 
+            body:
+              schema: <<errorResponse>>         
+      post: 
+        description: Create (if not exist) identified by {<<key>>}.
+        body:
+          schema: <<schemaType>>
+        responses:
+          201:
+            description: Created. Return the created object.
+          400: 
+            body:
+              schema: <<errorResponse>> 
+          409: 
+            body:
+              schema: <<errorResponse>> 
+                        
+#externalNonIdentifiedMember
+#   <<errorResponse>> - Indicates the error payload
+#   <<schemaType>> - Indicates the schema for Response object
+#   <<objectType>> - Indicates the name of the Response object
+externalNonIdentifiedMember: 
+      type: { deletableMember : { schemaType: <<schemaType>>, objectType: <<objectType>> } }
+      description: Item of <<objectType>> (Read, Delete, Post=Update-only).  Create by Post on collection.
+      put:
+        description: Update <<objectType>>.
+        responses:
+          204:
+            description: Updated.        
+          400:
+            body:
+              schema: <<errorResponse>>      
+          404: 
+            body:
+              schema: <<errorResponse>> 
+          409: 
+            body:
+              schema: <<errorResponse>> 
+              
+#readOnlyCollection
+#   <<errorResponse>> - Indicates the error payload
+#   <<memberSchemaType>> - Indicates the schema for member object
+#   <<memberObjectType>> - Indicates the name of the member object
+#   <<collectionSchemaType>> - Indicates the schema of the collection object
+readOnlyCollection:
+      type: { basic : { errorResponse: <<errorResponse>>, schemaType: <<memberSchemaType>>  } }
+      get: 
+        description: Retrieves list of <<memberObjectType>>s.
+        responses: 
+          200: 
+            description: OK. Return the list of <<memberObjectType>>s.
+            body:
+              schema: <<collectionSchemaType>>
+          204: 
+            description: EMPTY. List of  <<memberObjectType>>s is empty. 
+            
+#autoReadOnlyCollection
+#   <<errorResponse>> - Indicates the error payload
+autoReadOnlyCollection:
+      type: { readOnlyCollection : { errorResponse: <<errorResponse>>, memberObjectType: <<resourcePathName | !singularize>>, memberSchemaType: <<resourcePathName | !singularize>>, collectionSchemaType: <<resourcePathName>> } }
+
+
+#generatedKeyCollection
+#   <<errorResponse>> - Indicates the error payload
+#   <<memberSchemaType>> - Indicates the schema for member object
+#   <<memberObjectType>> - Indicates the name of the member object
+#   <<collectionSchemaType>> - Indicates the schema of the collection object
+generatedKeyCollection: 
+      type: { readOnlyCollection : { errorResponse: <<errorResponse>>, memberObjectType: <<memberObjectType>>, memberSchemaType : <<memberSchemaType>>, collectionSchemaType: <<collectionSchemaType>> } }
+      post:
+        description: Create <<memberObjectType>> by generating key.
+        body: 
+          schema:  <<memberSchemaType>> 
+        responses:
+          201:
+            description: Created. Return URL of newly created object in Location Header.
+            headers:
+              Location: 
+                type: string
+                description: <<requestPath>>/<<requestPathParam>>/{generatedKey}        
+          400:
+            body:
+              schema: <<errorResponse>>  
+          409:  
+            body:
+              schema: <<errorResponse>> 
+              
+#autoGeneratedKeyCollection
+#   <<errorResponse>> - Indicates the error payload
+autoGeneratedKeyCollection:
+      type: { generatedKeyCollection : { errorResponse: <<errorResponse>>, memberObjectType: <<resourcePathName | !singularize>>, memberSchemaType: <<resourcePathName | !singularize>>, collectionSchemaType: <<collectionSchemaType>> } }

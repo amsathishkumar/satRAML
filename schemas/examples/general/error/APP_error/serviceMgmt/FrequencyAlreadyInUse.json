@@ -1,0 +1,5 @@
+{ 
+  "urlErrorCode" : "OK"
+  ,"appErrorCode" : 200
+  ,"appErrorString" : "Frequency Already in Use"  
+}

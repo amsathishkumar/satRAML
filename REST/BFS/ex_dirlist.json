@@ -1,0 +1,24 @@
+[
+  {
+    "name": "Dir1",
+    "type": "dir"
+  },
+  {
+    "name": "Dir2",
+    "type": "dir"
+  },
+  {
+    "name": "File1",
+    "type": "file",
+    "sourceId" : 123,
+    "length" : 1234,
+    "deliveryMode" : "local"
+  },
+  {
+    "name": "File2",
+    "type": "file",
+    "sourceId" : 124,
+    "length" : 320000,
+    "deliveryMode" : "server"
+  }      
+]

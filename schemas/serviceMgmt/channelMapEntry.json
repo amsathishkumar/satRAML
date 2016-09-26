@@ -1,0 +1,42 @@
+{
+	"id": "http://vcs.cisco.com/schemas",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"description":
+	{
+		"channelMapEntry": 
+		{
+			"id": "#/channelMapEntry",
+			"description": "ChannelEntry  Configuration on the ChannelMap",
+			"type": "object",
+			"properties": 
+			{
+				"channelMapId": 
+				{
+					"description": "Identifies the Lineup Group Id",
+					"$ref": "serviceMgmt_core.json#/definitions/channelMapId"
+				},
+	
+				"status": 
+				{
+					"description": "GET only parameter, Ignored if supplied in POST",
+					"$ref": "general/reference.json#/definitions/status"
+				},
+	
+	            "channelEntry" :
+	            {
+	             	"description" : "Channel Entry mapping on the channelMap",
+					"$ref": "serviceMgmt_core.json#/definitions/channelEntry"
+	            }
+	
+			},
+	
+			"required": 
+			[
+				"channelMapId",
+				"channelEntry"
+			],
+	
+			"additionalProperties": false
+		}
+	}
+}

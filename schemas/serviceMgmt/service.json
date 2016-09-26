@@ -1,0 +1,70 @@
+{
+	"id": "http://vcs.cisco.com/schemas",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"properties":
+	{
+		"service": 
+		{
+			"id": "#/service",
+			"description": "Captures the Service Information",
+			"type": "object",
+			"properties": 
+			{
+				"caDomainId": 
+				{
+					"description": "Provided on GET response to indicate the CA Domain ID of this entry. [Optional] In POST verified against QueryParameter if present",
+					"$ref": "general/reference.json#/definitions/caDomainId"
+				},
+	
+				"status": 
+				{
+					"description": "GET only parameter, Ignored if supplied in POST",
+					"$ref": "general/reference.json#/definitions/status"
+				},
+	
+				"servcieName": 
+				{
+					"description": "Identifies the Service Name",
+					"$ref": "serviceMgmt_core.json#/definitions/servcieName"
+				},
+				"shortDescription": 
+				{
+					"description": "Identifies Short Description of the Service.",
+					"$ref": "serviceMgmt_core.json#/definitions/shortDescription"
+				},
+				"longDescription" :
+				{
+					"description": "Identifies Long Description of the Service",
+					"$ref": "serviceMgmt_core.json#/definitions/longDescription"
+				},
+				"applicationURL" :
+				{
+					"description": "Identifies Application URL for the Servcie",
+					"$ref": "serviceMgmt_core.json#/definitions/applicationURL"
+				},
+				"logo" :
+				{
+					"description": "Identifies  the Logo ",
+					"$ref": "serviceMgmt_core.json#/definitions/logo"
+				},
+				"paramValue" :
+				{
+					"description": "Mapping the  Source Id with the Service.",
+					"$ref": "serviceMgmt_core.json#/definitions/paramValue"
+				},
+				"paramString": 
+				{
+					"description": "Identifies the Param String.",
+					"$ref": "serviceMgmt_core.json#/definitions/paramString"
+				}
+			},
+	
+			"required": 
+			[
+				"servcieName","shortDescription","longDescription","applicationURL","paramValue"
+			],
+	
+			"additionalProperties": false
+		}
+	}	
+}

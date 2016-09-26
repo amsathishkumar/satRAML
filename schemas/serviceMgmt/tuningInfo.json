@@ -1,0 +1,47 @@
+{
+	"id": "http://vcs.cisco.com/schemas",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"properties":
+	{
+		"tuningInfo": 
+		{
+			"id": "#/tuningInfo",
+			"description": "captures the tuningInfo qualifiers",
+			"type": "object",
+			"properties": 
+			{
+			  "sourceId": 
+				{
+					"description": "Identifies the Source ID",
+					"$ref": "general/reference.json#/definitions/sourceId"
+				},
+				"hubId": 
+				{
+					"description": "Identifies the hubId for this the tuning parameters are applicable to.",
+					"$ref": "serviceMgmt_core.json#/definitions/hubId"
+				},
+				"frequency": 
+				{
+					"description": "RF Frequency for the downstream channel for STB",
+					"$ref": "serviceMgmt_core.json#/definitions/frequency"
+				},
+				"programNum": 
+				{
+					"description": "MPEG Program number to uniquely identify a specific program in MPTS/SPTS.",
+					"$ref": "serviceMgmt_core.json#/definitions/programNum"
+				},
+				"modulationMode": 
+				{
+					"description": "Captrures QAM Modulation Mode.",
+					"$ref": "serviceMgmt_core.json#/definitions/modulationMode"
+				}
+	
+			},
+			"required": 
+			[
+				"sourceId","hubId","frequency","programNum","modulationMode"
+			],
+			"additionalProperties": false
+		}
+	}	
+}

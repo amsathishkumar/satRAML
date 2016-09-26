@@ -1,0 +1,5 @@
+{ 
+  "urlErrorCode" : "OK"
+  ,"appErrorCode" : 101
+  ,"appErrorString" : "This Hub is already associated to another ChannelMap."  
+}

@@ -1,0 +1,36 @@
+{
+	"id": "http://vcs.cisco.com/schemas",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"segmentShortInfo": 
+	{
+		"id": "#/pkc/segmentShortInfo",
+		"description": "Short list of properties required by listing utilities",
+		"type": "object",
+		"properties": 
+		{
+			"caDomainId": 
+			{
+				"$ref": "general/reference.json#/definitions/caDomainId"
+			},
+
+			"sourceId": 
+			{
+				"$ref": "general/reference.json#/definitions/sourceId"
+			},
+
+			"segmentName": 
+			{
+				"$ref": "general/reference.json#/definitions/segmentName"
+			}
+		},
+
+		"required": 
+		[
+			"caDomainId",
+			"sourceId",
+			"sourceName"
+		],
+
+		"additionalProperties": false
+	}
+}

@@ -1,0 +1,78 @@
+{
+	"id": "http://vcs.cisco.com/schemas",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"segment": 
+	{
+		"id": "#/pkc/segment",
+		"description": "Captures the information of a segment",
+		"type": "object",
+		"properties": 
+		{
+			"caDomainId": 
+			{
+				"$ref": "general/reference.json#/pkc/definitions/caDomainId"
+			},
+
+			"sourceId": 
+			{
+				"description": "SourceId this segment belongs to.",
+				"$ref": "general/reference.json#/pkc/definitions/sourceId"
+			},
+
+			"segmentName": 
+			{
+				"$ref": "pkc/pkc_core.json#/pkc/definitions/segmentName"
+			},
+
+			"status": 
+			{
+				"description": "GET only parameter, ignored if supplied in POST",
+				"$ref": "general/reference.json#/pkc/definitions/status"
+			},
+
+			"segmentDuration": 
+			{
+				"description": "If not present default value assumed.",
+				"$ref": "pkc/pkc_core.json#/pkc/definitions/segmentDuration"
+			},
+
+			"blackOut": 
+			{
+				"description": "If not present default value assumed.",
+				"$ref": "pkc/pkc_core.json#/pkc/definitions/blackOut"
+			},
+
+			"fingerPrint": 
+			{
+				"description": "If not present default value assumed.",
+				"$ref": "pkc/pkc_core.json#/pkc/definitions/fingerPrint"
+			},
+
+			"copyProtection": 
+			{
+				"description": "If not present default value assumed.",
+				"$ref": "pkc/pkc_core.json#/definitions/copyProtection"
+			},
+
+			"macroVisionProtection": 
+			{
+				"description": "If not present default value assumed.",
+				"$ref": "pkc/pkc_core.json#/pkc/definitions/macroVisionProtection"
+			},
+
+			"citFlag": 
+			{
+				"description": "If not present default value assumed.",
+				"$ref": "pkc/pkc_core.json#/pkc/definitions/citFlag"
+			}
+		},
+
+		"required": 
+		[
+			"sourceId",
+			"segmentName"
+		],
+
+		"additionalProperties": false
+	}
+}

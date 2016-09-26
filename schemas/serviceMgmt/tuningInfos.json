@@ -1,0 +1,56 @@
+{
+	"id": "http://vcs.cisco.com/schemas",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"properties":
+	{
+		"tuningInfos": 
+		{
+			"id": "#/tuningInfos",
+			"description": "captures the list of hub qualifiers",
+			"type": "object",
+			"properties:": 
+			{
+				"totSize": 
+				{
+					"description": "Total number of elements in the collection.",
+					"type": "integer",
+					"minimum": 1,
+					"minLength": 1
+				},
+	
+				"retSize": 
+				{
+					"description": "Total number of elements returned in current response. Varies from totSize when paging is done.",
+					"type": "integer",
+					"minimum": 1
+				},
+				
+				"retStartIndex":
+				{
+					"description": "Index in the total number of elements for the starting element.",
+					"type": "integer",
+					"minimum": 1
+				},
+	
+				"elements": 
+				{
+					"type": "array",
+					"minItems": 1,
+					"items": 
+					{
+						"$ref": "tuningInfo.json#/tuningInfo"
+					}
+				}
+			},
+	
+			"additionalProperties": false,
+			"required": 
+			[
+				"totSize",
+				"retSize",
+				"retStartIndex",
+				"elements"
+			]
+		}
+	}	
+}

@@ -1,0 +1,16 @@
+{
+	"id": "http://vcs.cisco.com/schemas",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"packages": 
+	{
+		"id": "#/pkc/packages",
+		"description": "captures the list of package qualifiers",
+		"type": "array",
+		"items": 
+				{
+					"$ref": "pkc/source.json#/source"
+				},
+
+		"additionalProperties": false
+	}
+}

@@ -1,0 +1,12 @@
+{
+   "caDomainId": "caD1234",
+   "channelMapId" : "1",
+   "channelMapName": "LugId-1",
+	"hubList" :
+	 [
+	       { "hubId" : 1 },
+	       { "hubId" : 2 },
+	       { "hubId" : 3 }
+     ]
+      
+}

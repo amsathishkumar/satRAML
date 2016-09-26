@@ -1,0 +1,36 @@
+{
+	"id": "http://vcs.cisco.com/schemas",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"properties":
+	{
+		"hub": 
+		{
+			"id": "#/hub",
+			"description": "captures the hub qualifiers",
+			"type": "object",
+			"properties": 
+			{
+			 "caDomainId": 
+				{
+					"description": "Provided on GET response to indicate the CA Domain ID of this entry. [Optional] In POST verified against QueryParameter if present",
+					"$ref": "general/reference.json#/definitions/caDomainId"
+				},
+			  "hubId": 
+			  {
+			    "description" : "Identifier for HUB",
+			    "$ref": "serviceMgmt_core.json#/definitions/hubId"
+			  },
+			  "hubName": {
+			     "description" : "Identified Name of the  Hub",
+			    "$ref": "serviceMgmt_core.json#/definitions/hubName"
+			  }
+			
+			},
+			"required": 
+			[
+			  "caDomainId","hubId","hubName"
+			],
+			"additionalProperties": false
+		}
+	}	
+}

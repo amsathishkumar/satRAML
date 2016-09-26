@@ -1,0 +1,5 @@
+RAML
+~~~~~
+The validator allows you to check whether a RAML resource is valid or not, and in the case is not valid it provides a List of validation results:
+
+https://github.com/hadesbox/raml-java-parser.git

@@ -1,0 +1,67 @@
+[
+		{
+			"packageName": "Gold",
+			"packageType": "SUBSCRIPTION",
+			"pkPackageEid": 123,
+			"description":"Gold type subscription packages",
+			"status": "ACTIVE",
+			"segments": 
+			[
+				"HBO_East_Regular",
+				"ESPN_Regular"
+			],
+
+			"subPackages": 
+			[
+				"Silver"
+			]
+		},
+
+		{
+			"packageName": "Grp23",
+			"packageType": "DTA_GROUP_AUTHCODE",
+			"status": "ACTIVE",
+			"description":"DTA Group authcode package",
+			"groupId": 12
+		},
+
+		{
+			"packageName": "DtaHDFlag",
+			"packageType": "DTA_HD_AUTHCODE",
+			"status": "ACTIVE",
+            "description":"DTA Group authcode package"
+		},
+
+		{
+			"packageName": "VCT678",
+			"packageType": "DTA_ONLY",
+			"status": "ACTIVE",
+			"description":"It is a DTA only package",
+			"segments": 
+			[
+				"HBO_East_Regular",
+				"ESPN_Regular"
+			]
+		},
+
+		{
+			"packageName": "PPV02345",
+			"packageType": "PPV",
+			"status": "ACTIVE",
+			"description":"It is a PPV package",
+			"segments": 
+			[
+				"ESPN_Regular"
+			],
+
+			"limitedDuration": 
+			{
+				"effectiveTime": "2015-03-24 00:00:00T+00:00",
+				"duration": 
+				{
+					"unit": "MINS",
+					"length": 120
+				}
+			}
+		}
+]

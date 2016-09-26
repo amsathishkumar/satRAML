@@ -1,0 +1,41 @@
+{
+	"caDomainId": "caD1234",
+	"sourceId": "1234",
+	"lugInfos" :
+	[
+	   {
+	     "channelMapId" : 1,
+	      "chanInfo" :
+	      [
+	        {
+	          "displaychannelNumber" : 100
+	        },
+	        {
+	           "displaychannelNumber" : 200
+	        }
+	      ]
+	   },
+	   {
+	      "channelMapId" : 2,
+	      "chanInfo" :
+	      [
+	        {
+	          "displaychannelNumber" : 110
+	        }
+	       
+	      ]
+	   },
+	   {
+	      "channelMapId" : 3,
+	      "chanInfo" :
+	      [
+	        {
+	          "displaychannelNumber" : 120
+	        },
+	        {
+	           "displaychannelNumber" : 200
+	        }
+	      ]
+	   }
+	]
+}

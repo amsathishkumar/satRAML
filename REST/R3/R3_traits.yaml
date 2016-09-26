@@ -1,0 +1,38 @@
+#%RAML 0.8
+#R3_traits.yaml
+qSourceId:
+      queryParameters:
+        qSourceId:
+          description: <<objectType>> part of source with given SourceId
+          minimum: 1
+          maximum: 65535
+          displayName: Source ID
+          type: integer
+          required: false
+qServiceName:
+      queryParameters:
+        qServiceName:
+          description: <<objectType>> part of Service with given ServiceName
+          minLength: 1
+          maxLength: 20
+          displayName: Service Name
+          type: string
+          required: false
+qSourceName:
+      queryParameters:
+        qSourceName:
+          description: <<objectType>> containing the source with given Source Name
+          minLength: 1
+          maxLength: 20
+          displayName: Source Name
+          type: string
+          required: false
+qHubId:
+      queryParameters:
+        qRegionId:
+          description: <<objectType>> containing the tuning information with given Hub/Region Id
+          minimum: 1
+          maximum: 65535
+          displayName: Hub ID
+          type: integer
+          required: false     

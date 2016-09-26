@@ -1,0 +1,63 @@
+{
+    "id": "http://vcs.cisco.com/schemas", 
+    "$schema": "http://json-schema.org/draft-04/schema#", 
+    "packageShortInfo": {
+        "id": "#/pkc/packageShortInfo", 
+        "description": "Short list of properties required by listing utilities", 
+        "type": "object", 
+        "properties": {
+            "caDomainId": {
+                "description": "Identifier for a CA Domain. Similar to  ECID for a given ESN.", 
+                "type": "string", 
+                "minLength": 1, 
+                "maxLength": 20
+            }, 
+            "packageName": {
+                "description": "Name of a Package or AuthCode.  This is the key identifier and and also typically used/assigned to a STB/DTA", 
+                "type": "string", 
+                "minLength": 1, 
+                "maxLength": 20
+            }, 
+            "status": {
+                "description": "status of the object. GET only parameter", 
+                "enum": [
+                    "CREATE_IN_PROGRESS", 
+                    "ACTIVE", 
+                    "DELETE_IN_PROGRESS", 
+                    "DELETED"
+                ]
+            }, 
+            "packageType": {
+                "description": "Type of Package", 
+                "enum": [
+                    "SUBSCRIPTION", 
+                    "PPV", 
+                    "PPV AND IPPV", 
+                    "DTA_ONLY", 
+                    "DTA_GROUP_AUTHCODE", 
+                    "DTA_HD_AUTHCODE"
+                ], 
+                "default": "SUBSCRIPTION"
+            }, 
+            "dtaGroupId": {
+                "description": "Identifier of the download Group if packageType = DTA_GROUP_AUTHCODE", 
+                "type": "integer", 
+                "minimum": 0, 
+                "maximum": 15
+            }, 
+            "pkPackageEid": {
+                "description": "Identifier for a PowerKey Package.", 
+                "type": "long", 
+                "minimum": 0, 
+                "maximum": 4294967295
+            }
+        }, 
+        "required": [
+            "caDomainId", 
+            "packageName", 
+            "packageType", 
+            "status"
+        ], 
+        "additionalProperties": false
+    }
+}

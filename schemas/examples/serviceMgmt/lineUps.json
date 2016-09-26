@@ -1,0 +1,32 @@
+{
+	"totSize": 2,
+	"retSize": 2,
+	"retStartIndex": 1,
+	"elements": 
+	[
+		{
+		   "caDomainId": "caD1234",
+		   "lineUpId" : "1",
+		   "lineUpName": "LugId-1",
+			"hubList" :
+			 [
+			       { "hubId" : 1 },
+			       { "hubId" : 2 },
+			       { "hubId" :  3 }
+		     ]
+		      
+		},
+		
+	    {
+		   "caDomainId": "caD1234",
+		   "lineUpId" : "2",
+		   "lineUpName": "LugId-2",
+			"hubList" :
+			 [
+			       { "hubId" : 4 },
+			       { "hubId" : 5 }
+		     ]
+		      
+		}
+	]
+}

@@ -1,0 +1,333 @@
+#%RAML 0.8
+---
+title: "R1"
+version: v1
+documentation: 
+  - title: History
+    content: |
+       TBD
+  - title: Approach
+    content: |
+       R1 - REST API for managing source and segment information with PKC.
+       
+      
+        The following resources are managed via this interface API
+          1. sources
+          2. segments
+
+ 
+  - title: PKC Scope
+    content: |
+       With PKC, the 2 CA systems under DBDS, namely PowerKEY (EC) and SCP/SCC (DTACS)
+       have been merged into PKC.
+       
+       Also, PKC is deployed in the data center, and operates at a division level scope.  
+       Multiple market level operations are managed from the PKC.  The data to specific
+       market is identified by "caDomain" passed as queryParameter in the API.
+ 
+  - title: PowerKEY CAS (ex EC)
+    content: |
+       The concepts of sources and segments are directly extracted from the legacy 
+       deployments of DBDS.  The traditional parameters/attributes associated with these
+       elements are continued to be supported.
+           
+           * Source: 
+              *  <Parameters-TBD>
+           * Segment:
+              *  <Parameters-TBD>
+ 
+  - title: SCP/SCC CAS (DTACS)
+    content: |       
+       To support SCP/SCC the following additional parameters/concepts are added.
+       
+           * Source: 
+              *  isDTAApplicable - To determine if the Source is allowed for DTAs.
+              *  SCC Mode - To determine the accesiblity level for the source.
+              *  DLNA Mode - To determine if the source can be output on DLNA ports.
+              *  SDHighValue - added to contentType of a source to qualify High Value content offered as SD. 
+                
+mediaType: application/json
+resourceTypes: 
+  - !include ../general/resourceTypes.yaml
+traits: 
+  - !include ../general/traits.yaml
+  - !include ../R1/R1_traits.yaml
+schemas:
+  - sourceShortInfo : !include ../../schemas/pkc/sourceShortInfo.json 
+  - sourceShortInfos : !include ../../schemas/pkc/sourceShortInfos.json
+  - source : !include ../../schemas/pkc/source.json
+  - sources : !include ../../schemas/pkc/sources.json
+  - segmentShortInfo : !include ../../schemas/pkc/segmentShortInfo.json 
+  - segmentShortInfos : !include ../../schemas/pkc/segmentShortInfos.json
+  - segment : !include ../../schemas/pkc/segment.json
+  - segments : !include ../../schemas/pkc/segments.json
+  - errorType: !include ../../schemas/general/errorType.json    
+baseUri: http://baseaddress/{version}
+/sources:
+  type: { autoReadOnlyCollection: {  errorResponse: errorType } }
+  get:
+    is: [ allowPagination, allowTracking,  multiCaDomain : { errorResponse: errorType }, qSegmentName: { objectType: source } ]
+    responses:
+      200: 
+        body: 
+          schema: sources
+          example: !include ../../schemas/examples/pkc/sources.json 
+      400:
+        body: 
+          schema: errorType
+          example: !include ../../schemas/examples/general/error/APP_error/generic/SourceId_Invalid.json
+      404:
+        body: 
+          schema: errorType
+          example: !include ../../schemas/examples/general/error/APP_error/generic/CADomain_Not_Found.json
+      500:
+        body: 
+          schema: errorType
+          example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+  /shortInfos: 
+    type: { readOnlyCollection : { errorResponse: errorType, memberObjectType: sourceShortInfo, memberSchemaType: sourceShortInfo, collectionSchemaType: sourceShortInfos } }
+    get:
+      is: [ allowPagination, allowTracking, multiCaDomain : { errorResponse: errorType }, qSegmentName: { objectType: source }]
+      responses:
+        200: 
+          body: 
+            schema: sourceShortInfos
+            example: !include ../../schemas/examples/pkc/sourceShortInfos.json 
+        400:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/SourceId_Invalid.json 
+        404:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/CADomain_Not_Found.json 
+        500:
+          body:
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+  /{sourceId}: 
+    type: { externalIdentifiedMember : { errorResponse: errorType, schemaType: source, objectType: source, key: "caDomainId,sourceId" } }
+    uriParameters:
+      sourceId:
+        minimum: 1
+        maximum: 65535
+        type: integer
+    get:
+      is: [ allowTracking, multiCaDomain : { errorResponse: errorType } ]
+      responses:
+        200: 
+          body:
+            schema: source
+            example: !include ../../schemas/examples/pkc/source.json
+        400:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/SourceId_Invalid.json
+        404:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/SourceId_Not_Found.json 
+        500:
+          body:
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+    post:
+      is: [ needTracking  : { "errorResponse": errorType }  ]
+      body: 
+          schema: source
+          example: !include ../../schemas/examples/pkc/source.json
+      responses:
+        201: 
+          body:
+            schema: source
+            example: !include ../../schemas/examples/pkc/source.json
+        400:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/SourceId_Invalid.json
+        409:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/pkc/SegmentExistsforSourceId.json            
+        500:
+          body:
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+    put:
+      is: [ needTracking  : { "errorResponse": errorType }  ]
+      body: 
+          schema: source
+          example: !include ../../schemas/examples/pkc/source.json
+      responses:
+        200: 
+          body:
+            schema: source
+            example: !include ../../schemas/examples/pkc/source.json
+        201: 
+          body:
+            schema: source
+            example: !include ../../schemas/examples/pkc/source.json
+        400:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/SourceId_Invalid.json 
+        409:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/pkc/SegmentExistsforSourceId.json           
+        500:
+          body:
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+    delete: 
+      is: [  needTracking : { "errorResponse": errorType } ]
+      responses:
+        200: 
+          body:
+            schema: source
+            example: !include ../../schemas/examples/pkc/source.json
+        400:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/SourceId_Invalid.json
+        404:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/SourceId_Not_Found.json          
+        500:
+          body:
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+
+
+/segments: 
+   type: { readOnlyCollection : { errorResponse: errorType, memberObjectType: segment, memberSchemaType: segment, collectionSchemaType: segments } }
+   get: 
+     is: [ allowPagination, allowTracking, multiCaDomain : { errorResponse: errorType }, qSourceId: { objectType: segments }, qPackageName: { objectType: segments } ]
+     responses:
+       200: 
+         body: 
+           schema: segments
+           example: !include ../../schemas/examples/pkc/segments.json 
+       400:
+         body: 
+           schema: errorType
+           example: !include ../../schemas/examples/general/error/APP_error/generic/SegmentName_Invalid.json
+       404:
+         body: 
+           schema: errorType
+           example: !include ../../schemas/examples/general/error/APP_error/generic/CADomain_Not_Found.json
+       500:
+         body:
+           schema: errorType
+           example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json       
+   /shortInfos: 
+      type: { readOnlyCollection : { errorResponse: errorType, memberObjectType: segmentShortInfo, memberSchemaType: segmentShortInfo, collectionSchemaType: segmentShortInfos } }
+      get: 
+        is: [ multiCaDomain : { errorResponse: errorType }, allowPagination, allowTracking, qSourceId: { objectType: segments }, qPackageName: { objectType: segments }]
+        responses: 
+          200: 
+            body: 
+              schema: segmentShortInfos
+              example: !include ../../schemas/examples/pkc/segmentShortInfos.json 
+          400:
+            body: 
+              schema: errorType
+              example: !include ../../schemas/examples/general/error/APP_error/generic/SegmentName_Invalid.json
+          404:
+            body: 
+              schema: errorType
+              example: !include ../../schemas/examples/general/error/APP_error/generic/CADomain_Not_Found.json
+          500:
+            body:
+              schema: errorType
+              example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json
+   /{segmentName}: 
+      type: { externalIdentifiedMember : { errorResponse: errorType, schemaType: segment, objectType: segment, key: "caDomainId,sourceId,segmentName" } }
+      uriParameters:
+        segmentName:
+          minLength: 1
+          maxLength: 20
+          type: string
+      get: 
+        is: [ multiCaDomain : { errorResponse: errorType }, allowTracking ]
+        responses:
+          200: 
+            body:
+              schema: segment
+              example: !include ../../schemas/examples/pkc/segment.json
+          400: 
+            body: 
+              schema: errorType
+              example: !include ../../schemas/examples/general/error/APP_error/generic/SegmentName_Invalid.json
+          404:
+            body: 
+              schema: errorType
+              example: !include ../../schemas/examples/general/error/APP_error/pkc/SegmentName_Not_Found.json 
+          500:
+            body:
+              schema: errorType
+              example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+      put: 
+        is: [ needTracking : { "errorResponse": errorType }  ]
+        body: 
+          schema: segment
+          example: !include ../../schemas/examples/pkc/segment.json
+        responses:
+          200: 
+            body:
+              schema: segment
+              example: !include ../../schemas/examples/pkc/segment.json
+          201: 
+            body:
+              schema: segment
+              example: !include ../../schemas/examples/pkc/segment.json
+          400:
+            body: 
+              schema: errorType
+              example: !include ../../schemas/examples/general/error/APP_error/generic/SegmentName_Invalid.json
+          500:
+            body:
+              schema: errorType
+              example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json
+      post: 
+        is: [ needTracking : { "errorResponse": errorType }  ]
+        body: 
+          schema: segment
+          example: !include ../../schemas/examples/pkc/segment.json
+        responses:
+          201: 
+            body:
+              schema: segment
+              example: !include ../../schemas/examples/pkc/segment.json
+          400:
+            body: 
+              schema: errorType
+              example: !include ../../schemas/examples/general/error/APP_error/generic/SegmentName_Invalid.json 
+          409:
+            body:
+              schema: errorType
+              example: !include ../../schemas/examples/general/error/APP_error/pkc/AlreadyExistsSegmentName.json
+          500:
+            body:
+              schema: errorType
+              example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+      delete: 
+        is: [  needTracking : { "errorResponse": errorType } ]
+        responses:
+          200: 
+            body:
+              schema: segment
+              example: !include ../../schemas/examples/pkc/segment.json
+          400:
+            body: 
+              schema: errorType
+              example: !include ../../schemas/examples/general/error/APP_error/generic/SegmentName_Invalid.json
+          404:
+            body: 
+              schema: errorType
+              example: !include ../../schemas/examples/general/error/APP_error/pkc/SegmentName_Not_Found.json          
+          500:
+            body:
+              schema: errorType
+              example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 

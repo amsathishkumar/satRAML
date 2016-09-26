@@ -1,0 +1,47 @@
+{
+	"id": "http://vcs.cisco.com/schemas",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"properties":
+	{
+		"lineUp": 
+		{
+			"id": "#/lineUp",
+			"description": "Captures the  qualifiers for LineUp/ChannelMap Definition",
+			"type": "object",
+			"properties": 
+			{
+			  "caDomainId": 
+				{
+					"description": "Provided on GET response to indicate the CA Domain ID of this entry. [Optional] In POST verified against QueryParameter if present",
+					"$ref": "general/reference.json#/definitions/caDomainId"
+				},
+				
+			  "channelMapId": 
+				{
+					"description": "Identifies the ChannelMapId/LUG",
+					"$ref": "serviceMgmt_core.json#/definitions/channelMapId"
+				},
+				"channelMapName": 
+				{
+					"description": "Identifies ChannelMap/LUG by its Name.",
+					"$ref": "serviceMgmt_core.json#/definitions/channelMapName"
+				},
+				"hubList": 
+				{
+					"type": "array",
+					"minItems": 1,
+					"items": 
+					{
+						"$ref": "serviceMgmt_core.json#/definitions/hubId"
+					}
+				}	
+	
+			},
+			"required": 
+			[
+				"caDomainId","channelMapId","channelMapName","hubList"
+			],
+			"additionalProperties": false
+		}
+	}	
+}

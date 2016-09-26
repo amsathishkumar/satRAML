@@ -1,0 +1,51 @@
+#%RAML 0.8
+---
+title: "Student`"
+version: v1
+documentation: 
+  - title: History
+    content: |
+       TBD
+  - title: Approach
+    content: |
+       R1 - REST API for student.
+       
+      
+        The following resources are managed via this interface API
+          1. Student
+ 
+  - title: Student Scope
+    content: |
+      Student info.
+       
+      Studetnt details.
+ 
+
+                
+mediaType: application/json
+   
+baseUri: http://baseaddress/
+/student:
+    post:
+      
+      body: 
+          schema: !include student.json
+          example: !include studentsample.json
+      responses:
+        201: 
+          body:
+            schema: source
+            example: !include ../../schemas/examples/pkc/source.json
+        400:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/SourceId_Invalid.json
+        409:
+          body: 
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/pkc/SegmentExistsforSourceId.json            
+        500:
+          body:
+            schema: errorType
+            example: !include ../../schemas/examples/general/error/APP_error/generic/AppInternalError.json 
+   

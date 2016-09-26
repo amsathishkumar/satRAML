@@ -1,0 +1,21 @@
+Date : 1-Apr-2014
+EDCS Rev Version : 1
+Created the following files to support R1/R2
+* pkc/
+  => pkc_core.json, segment.json, segmentShortInfo.json, segmentShortInfos.json, segments.json
+  => source.json, sourceShortInfo.json, sourceShortInfos.json, sources.json
+  => package.json, packages.json, packageShortInfo.json, packageShortInfos.json
+* general/
+  => errorType.json, reference.json
+* examples/pkc/
+  => segment.json, segmentShortInfos.json, segments.json, source.json, sourceShortInfos.json
+  => sources.json, package.json, packages.json, packageShortInfos.json
+* examples/general/error/APP_error/pkc
+  => AlreadyExistsSegmentName.json, AlreadyExistsSourceName.json, AppInternalError.json
+  => CADomain_Not_Found.json, README.txt, SegmentName_Not_Found.json
+  => SourceId_Not_Found.json, PackageName_Not_Found.json, PackageTypeBeingModified.json
+* examples/general/error/URL_error/
+  => BothPageNumAndRecordsPerPageReqd.json, CADomain_Not_Supplied.json
+  => MsgOrigSystemAndMsgTokenRequired.json, OnlyOneCaDomainAllowed.json
+  => PageNumOutOfBound.json, ParentCollectionItemNotFound.json
+  => UnknownSortByColumn.json, PagingNotSupported.json

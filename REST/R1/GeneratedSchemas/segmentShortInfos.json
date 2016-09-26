@@ -1,0 +1,41 @@
+{
+    "id": "http://vcs.cisco.com/schemas", 
+    "$schema": "http://json-schema.org/draft-04/schema#", 
+    "segmentShortInfos": {
+        "id": "#/pkc/segmentShortInfos", 
+        "description": "captures the list of source qualifiers", 
+        "type": "array", 
+        "items": {
+            "id": "#/pkc/segmentShortInfo", 
+            "description": "Short list of properties required by listing utilities", 
+            "type": "object", 
+            "properties": {
+                "caDomainId": {
+                    "description": "Identifier for a CA Domain. Similar to  ECID for a given ESN.", 
+                    "type": "string", 
+                    "minLength": 1, 
+                    "maxLength": 20
+                }, 
+                "sourceId": {
+                    "description": "Identifier for a Linear source.  Similar to ATSC SI sourceId Range(0-0xFFFF).  Though 0-0xFFF is another range that exists.", 
+                    "type": "integer", 
+                    "minimum": 1, 
+                    "maximum": 65535
+                }, 
+                "segmentName": {
+                    "description": "Name of the Segment", 
+                    "type": "string", 
+                    "minLength": 1, 
+                    "maxLength": 20
+                }
+            }, 
+            "required": [
+                "caDomainId", 
+                "sourceId", 
+                "segmentName"
+            ], 
+            "additionalProperties": false
+        }, 
+        "additionalProperties": false
+    }
+}

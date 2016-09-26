@@ -1,0 +1,18 @@
+{   
+   "id": "http://jsonschema.net",
+    "type": "object",
+    "properties": {
+        "message": {
+            "id": "http://jsonschema.net/message",
+            "type": "string"
+        },
+        "code": {
+            "id": "http://jsonschema.net/code",
+            "type": "integer"
+        }
+    },
+    "required": [
+        "message",
+        "code"
+    ]
+}

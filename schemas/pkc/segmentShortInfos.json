@@ -1,0 +1,16 @@
+{
+	"id": "http://vcs.cisco.com/schemas",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"segmentShortInfos": 
+	{
+		"id": "#/pkc/segmentShortInfos",
+		"description": "captures the list of source qualifiers",
+		"type": "array",
+	    "items": 
+				{
+					"$ref": "pkc/segmentShortInfo.json#/segmentShortInfo"
+				},
+
+		"additionalProperties": false
+	}
+}
